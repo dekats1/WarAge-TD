@@ -1,0 +1,33 @@
+.anchor-pane {
+    -fx-background-color: linear-gradient(to bottom, #1e1e1e, #2c2c2c);
+}
+
+.title-grey {
+    -fx-fill: #bbbbbb;
+    -fx-font-size: 64px;
+    -fx-font-family: "Arial Black";
+    -fx-effect: dropshadow(gaussian, black, 4, 0.4, 2, 2);
+}
+
+.title-red {
+    -fx-fill: #e53935;
+    -fx-font-size: 64px;
+    -fx-font-family: "Arial Black";
+    -fx-effect: dropshadow(gaussian, black, 4, 0.4, 2, 2);
+}
+
+.menu-button {
+    -fx-background-color: #444444;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-pref-width: 180px;
+    -fx-padding: 8 16;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 4, 0.5, 1, 1);
+    -fx-font-family: "Segoe UI";
+    -fx-cursor: hand;
+}
+
+.menu-button:hover {
+    -fx-background-color: #666666;
+}

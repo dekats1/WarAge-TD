@@ -1,0 +1,63 @@
+.root {
+    -fx-background-color: linear-gradient(to bottom, #233522, #88bf82);
+    -fx-padding: 30px;
+    -fx-font-family: "Segoe UI", "Arial", sans-serif;
+}
+
+.title-label {
+    -fx-text-fill: #f1c40f;
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, #000000, 3, 0.3, 0, 2);
+}
+
+.setting-label {
+    -fx-text-fill: #ecf0f1;
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+}
+
+/* Ползунки */
+.slider {
+    -fx-pref-width: 220px;
+    -fx-control-inner-background: #7f8c8d;
+    -fx-padding: 5px;
+}
+
+.slider .track {
+    -fx-background-color: #95a5a6;
+}
+
+.slider .thumb {
+    -fx-background-color: #e67e22;
+    -fx-background-radius: 10px;
+    -fx-effect: dropshadow(gaussian, #000000, 4, 0.4, 0, 2);
+}
+
+/* Кнопка */
+.action-button {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 15px;
+    -fx-background-radius: 10px;
+    -fx-padding: 8px 18px;
+    -fx-effect: dropshadow(gaussian, #000000, 4, 0.4, 0, 2);
+    -fx-transition: all 0.3s ease-in-out;
+}
+
+.action-button:hover {
+    -fx-background-color: #2980b9;
+}
+
+/* Label для отображения значения громкости */
+.value-label {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-padding: 0 10px;
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-background-radius: 5px;
+    -fx-effect: dropshadow(gaussian, #000000, 2, 0.3, 0, 1);
+}
+

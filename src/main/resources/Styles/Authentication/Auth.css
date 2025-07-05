@@ -1,0 +1,91 @@
+.root {
+    -fx-background-color: transparent;
+    -fx-font-family: "Segoe UI", "Arial", sans-serif;
+}
+
+.label {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, #000000, 3, 0.4, 0, 1);
+}
+
+.mainLabel {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 35px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, #000000, 3, 0.4, 0, 1);
+}
+
+/* Поле для логина */
+.text-field {
+    -fx-background-color: rgba(255, 255, 255, 0.8);
+    -fx-text-fill: #2c3e50;
+    -fx-font-size: 14px;
+    -fx-background-radius: 6px;
+    -fx-border-color: #34495e;
+    -fx-border-radius: 6px;
+    -fx-padding: 6px;
+}
+
+/* Поле для пароля */
+.password-field {
+    -fx-background-color: rgba(255, 255, 255, 0.8);
+    -fx-text-fill: #2c3e50;
+    -fx-font-size: 14px;
+    -fx-background-radius: 6px;
+    -fx-border-color: #34495e;
+    -fx-border-radius: 6px;
+    -fx-padding: 6px;
+}
+
+/* Кнопка "Войти" */
+.button {
+    -fx-background-color: #e74c3c;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8px;
+    -fx-padding: 10px 20px;
+    -fx-effect: dropshadow(gaussian, #000000, 5, 0.5, 0, 2);
+    -fx-cursor: hand;
+    -fx-transition: all 0.3s ease-in-out;
+}
+
+.button:hover {
+    -fx-background-color: #c0392b;
+}
+
+/* Чекбокс: запомнить меня, согласие и пр. */
+.check-box {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.check-box .box {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e74c3c;
+    -fx-border-width: 2px;
+    -fx-background-radius: 3px;
+    -fx-border-radius: 3px;
+}
+
+.check-box:selected .box {
+    -fx-background-color: #e74c3c;
+}
+
+/* Гиперссылка для перехода на регистрацию */
+.hyperlink-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #3498db;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-underline: true;
+    -fx-cursor: hand;
+    -fx-padding: 4px;
+}
+
+.hyperlink-button:hover {
+    -fx-text-fill: #2980b9;
+}
