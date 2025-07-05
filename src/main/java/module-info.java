@@ -1,7 +1,5 @@
 module WarAge.TD {
-    requires javafx.controls;
-    requires javafx.fxml;
-    requires javafx.graphics;
+    requires com.almasb.fxgl.all;
 
     opens com.warage to javafx.fxml;
     opens com.warage.Controllers to javafx.fxml;

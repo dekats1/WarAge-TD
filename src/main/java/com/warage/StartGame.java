@@ -1,5 +1,6 @@
 package com.warage;
 
+import com.almasb.fxgl.app.GameApplication;
 import com.warage.Model.Model;
 import javafx.application.Application;
 import javafx.stage.Stage;
