@@ -3,20 +3,30 @@ package com.warage;
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.dsl.FXGL;
+import com.warage.UI.Authentication.LoginUI;
+import com.warage.UI.Authentication.RegistrationUI;
+import com.warage.UI.MainMenuUI;
+import com.warage.UI.MenuUI;
+import com.warage.UI.SettingsUI;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
+import static com.almasb.fxgl.dsl.FXGLForKtKt.addUINode;
+
 public class TowerDefenseGameApp extends GameApplication {
+    private StackPane rootUI;
 
     @Override
     protected void initSettings(GameSettings settings) {
-        settings.setWidth(800);
-        settings.setHeight(600);
-        settings.setTitle("My Tower Defense Game");
+        settings.setWidth(1600);
+        settings.setHeight(800);
+        settings.setTitle("WarAge");
         settings.setVersion("0.1");
-        settings.setFullScreenAllowed(false);
-        // Дополнительные настройки FXGL
+        settings.setFullScreenFromStart(true);
+        settings.setFullScreenAllowed(true);
     }
 
     @Override
@@ -39,12 +49,39 @@ public class TowerDefenseGameApp extends GameApplication {
 
     @Override
     protected void initUI() {
-        // Здесь будет FXGL UI, например, счетчик денег, волн, панель выбора башен
-        // FXGL имеет свою систему UI, но вы можете использовать и стандартные JavaFX контролы
-//        Label moneyLabel = new Label("Деньги: " + FXGL.getip("money"));
-//        moneyLabel.setFont(Font.font(20));
-//        moneyLabel.setTextFill(Color.GOLD);
-//        FXGL.addUINode(moneyLabel, 10, 10);
+        rootUI = new StackPane();
+        addUINode(rootUI);
+
+        showLoginUI();
+    }
+
+    private void setUI(Node Ui){
+        rootUI.getChildren().setAll(Ui);
+    }
+
+    private void showLoginUI(){
+        var loginUI = new LoginUI(this::showMainMenuUI,this::showRegistrationUI);
+        setUI(loginUI.getRoot());
+    }
+
+    private void showRegistrationUI() {
+        var registrationUI = new RegistrationUI(this::showLoginUI);
+        setUI(registrationUI.getRoot());
+    }
+
+    private void showMainMenuUI() {
+        var menuUI = new MainMenuUI(this::showGameUI, this::showSettingsUI,this::showLoginUI);
+        setUI(menuUI.getRoot());
+    }
+
+    private void showSettingsUI() {
+        var settingsUI = new SettingsUI(this::showMainMenuUI);
+        setUI(settingsUI.getRoot());
+    }
+
+    private void showGameUI() {
+        var gameUI = new MenuUI();
+        setUI(gameUI.getRoot());
     }
 
     // Если вы хотите запускать игру из отдельного main-метода (для тестирования)

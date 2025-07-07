@@ -6,7 +6,7 @@ import javafx.scene.image.ImageView;
 import java.time.LocalTime;
 
 public class TimeChecker {
-    private static final LocalTime startTime = LocalTime.of(12,0);
+    private static final LocalTime startTime = LocalTime.of(22,0);
     private static final LocalTime endTime = LocalTime.of(6,0);
 
     public static void setBackgroundImage(ImageView imageView){

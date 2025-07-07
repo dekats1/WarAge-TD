@@ -5,7 +5,7 @@
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="699.0" prefWidth="599.0" stylesheets="@../Styles/Settings.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.warage.Controllers.SettingsController">
+<AnchorPane prefHeight="699.0" prefWidth="599.0" stylesheets="@../Styles/Settings.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.warage.UI.SettingsUI">
      <Label layoutX="204.0" layoutY="80.0" styleClass="title-label" text="Настройки" />
       <Label layoutX="77.0" layoutY="191.0" styleClass="setting-label" text="Музыка:" />
       <Slider fx:id="musicSlider" layoutX="190.0" layoutY="191.0" max="100" min="0" value="50" />
