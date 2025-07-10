@@ -53,5 +53,27 @@
     );
 }
 
+.circular-image-pane {
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+    -fx-background-repeat: no-repeat;
+    -fx-background-radius: 50%;
+    -fx-border-radius: 50%;
+    -fx-border-color: transparent;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 5, 0.0, 0, 2);
+}
+
+.money-value-label {
+    -fx-font-family: "Arial", sans-serif;
+    -fx-font-size: 40px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #7bdd00;
+    -fx-padding: 0 10px;
+    -fx-effect: dropshadow(gaussian, black, 2, 0, 0, 1),
+    dropshadow(gaussian, black, 2, 0, 0, -1),
+    dropshadow(gaussian, black, 2, 0, 1, 0),
+    dropshadow(gaussian, black, 2, 0, -1, 0);
+}
+
 
 

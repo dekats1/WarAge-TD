@@ -1,0 +1,146 @@
+/* --- Стили для выполненных достижений --- */
+.achievement-tile {
+    -fx-background-color: transparent;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.4), 15, 0.1, 0, 8);
+    -fx-background-radius: 30;
+}
+
+/* --- Стили для НЕвыполненных достижений --- */
+.uncompleted-achievement-tile {
+    -fx-background-color: transparent;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 10, 0.05, 0, 5);
+    -fx-background-radius: 30;
+}
+
+
+/* --- Стили для текста плашек --- */
+.achievement-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.achievement-description {
+    -fx-font-size: 14px;
+    -fx-text-fill: #E0FFFF;
+}
+
+.achievement-progress {
+    -fx-font-size: 12px;
+    -fx-text-fill: #BBF0F0;
+}
+
+/* --- СТИЛИ ДЛЯ ОКНА ДОСТИЖЕНИЙ --- */
+.achievement-window-background {
+    -fx-background-color: #37474F;
+    -fx-background-radius: 20;
+    -fx-border-color: #4DD0E1;
+    -fx-border-width: 4;
+    -fx-border-radius: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.8), 50, 0.3, 0, 10);
+}
+
+.achievement-window-title {
+    -fx-font-size: 30px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ECEFF1;
+    -fx-padding: 0 0 10px 0;
+}
+
+/* --- Стиль для кнопки закрытия (крестика) --- */
+.close-button {
+    -fx-background-color: #455A64;
+    -fx-background-radius: 25px;
+    -fx-border-radius: 25px;
+    -fx-text-fill: #E53935;
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-padding: 5px 10px;
+    -fx-cursor: hand;
+    -fx-transition: all 0.1s ease-in-out;
+}
+
+.close-button:hover {
+    -fx-text-fill: #FF5252;
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+}
+
+.close-button:pressed {
+    -fx-text-fill: #C62828;
+}
+
+/* Стили для кнопок */
+.filter-button {
+    -fx-background-color: #78909C;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 8px 15px;
+    -fx-background-radius: 5;
+    -fx-cursor: hand;
+    -fx-transition: all 0.2s ease-in-out;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0.0, 0, 2);
+}
+
+.filter-button:hover {
+    -fx-background-color: #90A4AE;
+}
+
+.filter-button:pressed {
+    -fx-background-color: #546E7A;
+}
+
+/* Класс для активной/выбранной кнопки фильтра */
+.selected-button {
+    -fx-background-color: #42A5F5;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(66, 165, 245, 0.8), 20, 0.5, 0, 0);
+    -fx-border-color: white;
+    -fx-border-width: 1;
+    -fx-border-radius: 5;
+    -fx-font-size: 14px;
+    -fx-padding: 8px 15px;
+    -fx-background-radius: 5;
+}
+
+.selected-button:hover {
+    -fx-background-color: #2196F3;
+}
+
+/* --- Стили для ScrollBar --- */
+.scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .scroll-bar:vertical .track {
+    -fx-background-color: #455A64;
+    -fx-background-radius: 5;
+    -fx-padding: 2;
+}
+
+.scroll-pane .scroll-bar:vertical .thumb {
+    -fx-background-color: #607D8B;
+    -fx-background-radius: 5;
+    -fx-background-insets: 0 0 0 0;
+}
+
+.scroll-pane .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #78909C;
+}
+
+.scroll-pane .scroll-bar:vertical .increment-button,
+.scroll-pane .scroll-bar:vertical .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.scroll-pane .scroll-bar:vertical .increment-arrow,
+.scroll-pane .scroll-bar:vertical .decrement-arrow {
+    -fx-shape: " ";
+    -fx-padding: 0;
+}

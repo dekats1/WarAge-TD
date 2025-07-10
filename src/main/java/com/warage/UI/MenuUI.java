@@ -1,6 +1,8 @@
 package com.warage.UI;
 
+import com.warage.UI.Achievements.AchievementWindowUI;
 import com.warage.Views.TimeChecker;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -8,11 +10,13 @@ import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 
+import java.util.function.Consumer;
+
 public class MenuUI {
 
     private AnchorPane root;
 
-    public MenuUI() {
+    public MenuUI(Consumer<Node> achievementWindow, Runnable toCareerMap) {
         root = new AnchorPane();
         root.getStyleClass().add("root");
         root.getStylesheets().add(getClass().getResource("/Styles/Menu.css").toExternalForm());
@@ -30,8 +34,24 @@ public class MenuUI {
         AnchorPane.setRightAnchor(backgroundImage, 0.0);
         root.getChildren().add(backgroundImage);
 
+        ImageView creditsImage = new ImageView();
+        creditsImage.setFitHeight(150.0);
+        creditsImage.setFitWidth(350.0);
+        creditsImage.setLayoutX(1200);
+        creditsImage.setPickOnBounds(true);
+        creditsImage.setImage(new Image(getClass().getResourceAsStream("/Image/Credits.png")));
+
+        Label creditsLabel = new Label("$5550");
+        creditsLabel.setLayoutX(1310);
+        creditsLabel.setLayoutY(35);
+        creditsLabel.setPrefWidth(180.0);
+        creditsLabel.setPrefHeight(80.0);
+        creditsLabel.getStyleClass().add("money-value-label");
+
+        root.getChildren().addAll(creditsImage, creditsLabel);
+
         // Start Game Button
-        Button startGameButton = new Button(); // No text in FXML, uses graphic
+        Button startGameButton = new Button();
         startGameButton.setLayoutX(689.0);
         startGameButton.setLayoutY(628.0);
         startGameButton.setMaxHeight(202.0);
@@ -39,7 +59,7 @@ public class MenuUI {
         startGameButton.setPrefHeight(127.0);
         startGameButton.setPrefWidth(135.0);
         startGameButton.setMnemonicParsing(false);
-        startGameButton.setStyle("-fx-background-color: transparent; -fx-border-color: transparent;"); // Inline style
+        startGameButton.setStyle("-fx-background-color: transparent; -fx-border-color: transparent;");
         startGameButton.getStyleClass().add("round-button");
 
         // Graphic for Start Game Button
@@ -72,7 +92,19 @@ public class MenuUI {
         awardsButton.setPrefWidth(135.0);
         awardsButton.setMnemonicParsing(false);
         awardsButton.getStyleClass().add("round-button");
+
+        ImageView achievementImage = new ImageView();
+        achievementImage.setFitHeight(150.0);
+        achievementImage.setFitWidth(128.0);
+        achievementImage.setPickOnBounds(true);
+        achievementImage.setPreserveRatio(true);
+        achievementImage.setImage(new Image(getClass().getResource("/Image/Achievements.png").toExternalForm()));
+        awardsButton.setGraphic(achievementImage);
         root.getChildren().add(awardsButton);
+        awardsButton.setOnAction(event -> {
+            AchievementWindowUI achievementWindowUI = new AchievementWindowUI();
+            achievementWindow.accept(achievementWindowUI.getRoot());
+        });
 
         // Company Button
         Button companyButton = new Button();
@@ -85,6 +117,7 @@ public class MenuUI {
         companyButton.setMnemonicParsing(false);
         companyButton.getStyleClass().add("round-button");
         root.getChildren().add(companyButton);
+        companyButton.setOnAction(event -> toCareerMap.run());
 
         // Shop Button
         Button shopButton = new Button();

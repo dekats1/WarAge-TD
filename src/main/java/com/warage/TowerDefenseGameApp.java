@@ -3,18 +3,23 @@ package com.warage;
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.dsl.FXGL;
+import com.warage.UI.Achievements.AchievementWindowUI;
 import com.warage.UI.Authentication.LoginUI;
 import com.warage.UI.Authentication.RegistrationUI;
+import com.warage.UI.CareerGameUI.CareerMapUI;
 import com.warage.UI.MainMenuUI;
 import com.warage.UI.MenuUI;
 import com.warage.UI.SettingsUI;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.SubScene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 import static com.almasb.fxgl.dsl.FXGLForKtKt.addUINode;
+import static com.almasb.fxgl.dsl.FXGLForKtKt.getGameScene;
 
 public class TowerDefenseGameApp extends GameApplication {
     private StackPane rootUI;
@@ -52,7 +57,7 @@ public class TowerDefenseGameApp extends GameApplication {
         rootUI = new StackPane();
         addUINode(rootUI);
 
-        showLoginUI();
+        showCareerMapUI();
     }
 
     private void setUI(Node Ui){
@@ -70,7 +75,7 @@ public class TowerDefenseGameApp extends GameApplication {
     }
 
     private void showMainMenuUI() {
-        var menuUI = new MainMenuUI(this::showGameUI, this::showSettingsUI,this::showLoginUI);
+        var menuUI = new MainMenuUI(this::showMenuUI, this::showSettingsUI,this::showLoginUI);
         setUI(menuUI.getRoot());
     }
 
@@ -79,10 +84,18 @@ public class TowerDefenseGameApp extends GameApplication {
         setUI(settingsUI.getRoot());
     }
 
-    private void showGameUI() {
-        var gameUI = new MenuUI();
+    private void showMenuUI() {
+        var gameUI = new MenuUI(achievemntNode->{
+            rootUI.getChildren().add(achievemntNode);
+        },this::showCareerMapUI);
         setUI(gameUI.getRoot());
     }
+
+    private void showCareerMapUI() {
+        var mapUI = new CareerMapUI();
+        setUI(mapUI.getRoot());
+    }
+
 
     // Если вы хотите запускать игру из отдельного main-метода (для тестирования)
     public static void main(String[] args) {
