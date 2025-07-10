@@ -1,10 +1,9 @@
 package com.warage.Model;
 
+
 public class Model {
     private static Model model;
 
-    private Model() {
-    }
 
     public synchronized static Model getInstance() {
         if (model == null) {
@@ -12,4 +11,5 @@ public class Model {
         }
         return model;
     }
+
 }

@@ -65,7 +65,7 @@ public class TowerDefenseGameApp extends GameApplication {
     }
 
     private void showRegistrationUI() {
-        var registrationUI = new RegistrationUI(this::showLoginUI);
+        var registrationUI = new RegistrationUI(this::showLoginUI, this::showMainMenuUI);
         setUI(registrationUI.getRoot());
     }
 
