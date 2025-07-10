@@ -39,7 +39,7 @@ public class TowerDefenseGameApp extends GameApplication {
         // Здесь будет логика инициализации вашего игрового мира
         // Например, загрузка карты, размещение первых башен, спавн врагов
         //FXGL.getGameWorld().addEntityFactory(new MyTowerFactory()); // Ваша фабрика сущностей
-        // ...
+        // ... аиапра
     }
 
     @Override
