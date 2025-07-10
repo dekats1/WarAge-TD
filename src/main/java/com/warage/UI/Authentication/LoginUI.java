@@ -87,6 +87,7 @@ public class LoginUI {
         loginButton.setLayoutY(653);
         loginButton.setPrefSize(116, 48);
         loginButton.setOnAction(e -> {
+
             onLoginSuccess.run();
         });
         root.getChildren().add(loginButton);

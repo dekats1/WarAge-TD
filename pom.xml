@@ -13,9 +13,9 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>17</maven.compiler.source>
-    <maven.compiler.target>17</maven.compiler.target>
-    <javafx.version>17.0.2</javafx.version>
+    <maven.compiler.source>23</maven.compiler.source>
+    <maven.compiler.target>23</maven.compiler.target>
+    <javafx.version>23.0.1</javafx.version>
     <main.class>com.warage.StartGame</main.class>
   </properties>
 
@@ -23,18 +23,17 @@
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-controls</artifactId>
-      <version>23.0.1</version>
+      <version>${javafx.version}</version>
     </dependency>
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-fxml</artifactId>
-      <version>23.0.1</version>
+      <version>${javafx.version}</version>
     </dependency>
-
     <dependency>
       <groupId>org.openjfx</groupId>
       <artifactId>javafx-graphics</artifactId>
-      <version>23.0.1</version>
+      <version>${javafx.version}</version>
     </dependency>
     <dependency>
       <groupId>org.junit.jupiter</groupId>
@@ -48,11 +47,20 @@
       <version>5.8.1</version>
       <scope>test</scope>
     </dependency>
-
     <dependency>
       <groupId>com.github.almasb</groupId>
       <artifactId>fxgl</artifactId>
       <version>17.2</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.16.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <artifactId>jackson-datatype-jsr310</artifactId>
+      <version>2.16.0</version>
     </dependency>
   </dependencies>
 
@@ -61,13 +69,12 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.1</version>
+        <version>3.11.0</version>
         <configuration>
           <source>${maven.compiler.source}</source>
           <target>${maven.compiler.target}</target>
         </configuration>
       </plugin>
-
       <plugin>
         <groupId>org.openjfx</groupId>
         <artifactId>javafx-maven-plugin</artifactId>
@@ -80,13 +87,9 @@
         </configuration>
         <executions>
           <execution>
-            <!-- Default configuration for running -->
-            <!-- Usage: mvn clean javafx:run -->
             <id>default-cli</id>
           </execution>
           <execution>
-            <!-- Configuration for creating a self-contained application bundle -->
-            <!-- Usage: mvn clean install -->
             <id>create-jlink-image</id>
             <goals>
               <goal>jlink</goal>
@@ -94,8 +97,6 @@
           </execution>
         </executions>
       </plugin>
-
-      <!-- Плагин Maven JAR для настройки JAR-файла (опционально, если нужен исполняемый JAR) -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
@@ -109,7 +110,6 @@
           </archive>
         </configuration>
       </plugin>
-
     </plugins>
   </build>
 </project>
