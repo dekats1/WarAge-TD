@@ -1,4 +1,3 @@
-// src/main/java/com/warage/Model/PlayerProfile.java
 package com.warage.Model;
 
 import java.time.LocalDateTime;
@@ -7,28 +6,28 @@ public class PlayerProfile {
 
     private Long id;
     private String username;
-    private String email; // <-- ДОБАВЛЕНО
-    private String hashedPassword; // <-- ДОБАВЛЕНО
-    private int coins;
+    private String email;
+    private String hashedPassword;
+    private int money;
     private int experience;
     private LocalDateTime lastLogin;
+    private int maxDamage;
+    private int endlessHighestWave;
+    private int endlessHighScore;
 
-    public PlayerProfile() {
-        // Дефолтный конструктор для Jackson
-    }
-
-    // Обновленный конструктор, если вы его используете
-    public PlayerProfile(Long id, String username, String email, String hashedPassword, int coins, int experience, LocalDateTime lastLogin) {
+    public PlayerProfile(Long id, String username, String email, String hashedPassword, int coins, int experience, LocalDateTime lastLogin,int maxDamage, int endlessHighestWave, int endlessHighScore) {
         this.id = id;
         this.username = username;
-        this.email = email; // <-- ДОБАВЛЕНО
-        this.hashedPassword = hashedPassword; // <-- ДОБАВЛЕНО
-        this.coins = coins;
+        this.email = email;
+        this.hashedPassword = hashedPassword;
+        this.money = coins;
         this.experience = experience;
         this.lastLogin = lastLogin;
+        this.maxDamage = maxDamage;
+        this.endlessHighestWave = endlessHighestWave;
+        this.endlessHighScore = endlessHighScore;
     }
 
-    // --- Геттеры и Сеттеры (обязательны для Jackson) ---
     public Long getId() {
         return id;
     }
@@ -45,7 +44,6 @@ public class PlayerProfile {
         this.username = username;
     }
 
-    // <-- ДОБАВЛЕНЫ ГЕТТЕРЫ И СЕТТЕРЫ ДЛЯ EMAIL И HASHEDPASSWORD
     public String getEmail() {
         return email;
     }
@@ -61,14 +59,13 @@ public class PlayerProfile {
     public void setHashedPassword(String hashedPassword) {
         this.hashedPassword = hashedPassword;
     }
-    // <-- КОНЕЦ ДОБАВЛЕННЫХ ГЕТТЕРОВ И СЕТТЕРОВ
 
-    public int getCoins() {
-        return coins;
+    public int getMoney() {
+        return money;
     }
 
-    public void setCoins(int coins) {
-        this.coins = coins;
+    public void setMoney(int money) {
+        this.money = money;
     }
 
     public int getExperience() {
@@ -92,11 +89,35 @@ public class PlayerProfile {
         return "PlayerProfile{" +
                 "id=" + id +
                 ", username='" + username + '\'' +
-                ", email='" + email + '\'' + // <-- ОБНОВЛЕНО
-                ", hashedPassword='" + hashedPassword + '\'' + // <-- ОБНОВЛЕНО
-                ", coins=" + coins +
+                ", email='" + email + '\'' +
+                ", hashedPassword='" + hashedPassword + '\'' +
+                ", coins=" + money +
                 ", experience=" + experience +
                 ", lastLogin=" + lastLogin +
                 '}';
+    }
+
+    public int getMaxDamage() {
+        return maxDamage;
+    }
+
+    public void setMaxDamage(int maxDamage) {
+        this.maxDamage = maxDamage;
+    }
+
+    public int getEndlessHighestWave() {
+        return endlessHighestWave;
+    }
+
+    public void setEndlessHighestWave(int endlessHighestWave) {
+        this.endlessHighestWave = endlessHighestWave;
+    }
+
+    public int getEndlessHighScore() {
+        return endlessHighScore;
+    }
+
+    public void setEndlessHighScore(int endlessHighScore) {
+        this.endlessHighScore = endlessHighScore;
     }
 }
