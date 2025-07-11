@@ -13,7 +13,7 @@ import javafx.scene.image.Image;
 public class LoginUI {
     private AnchorPane root;
     private PlayerApiClient playerApiClient = new PlayerApiClient();
-
+//q
     public LoginUI(Runnable onLoginSuccess, Runnable toRegistration) {
         root = new AnchorPane();
         root.getStyleClass().add("root");
