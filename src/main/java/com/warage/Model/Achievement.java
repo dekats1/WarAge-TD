@@ -12,6 +12,4 @@ public class Achievement {
     private Integer needToReward;
     private Integer rewardMoney;
     private Integer rewardExperience;
-
-
 }

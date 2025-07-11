@@ -10,6 +10,6 @@ public class PlayerAchievement {
     private PlayerProfile player;
     private Achievement achievement;
     private LocalDateTime dateAchieved;
-
+    private Integer progress;
 
 }

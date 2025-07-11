@@ -29,12 +29,6 @@ public class PlayerApiClient {
 
     }
 
-    public CompletableFuture<PlayerProfile> loginOrRegisterPlayer(String username) {
-
-        return null;
-    }
-
-
     public CompletableFuture<PlayerProfile> registerNewPlayer(String username, String password, String email) {
         Map<String, String> requestBodyMap = new HashMap<>();
         requestBodyMap.put("username", username);
