@@ -12,7 +12,7 @@ import javafx.scene.image.Image;
 
 public class LoginUI {
     private AnchorPane root;
-    private PlayerApiClient playerApiClient;
+    private PlayerApiClient playerApiClient = new PlayerApiClient();
 
     public LoginUI(Runnable onLoginSuccess, Runnable toRegistration) {
         root = new AnchorPane();

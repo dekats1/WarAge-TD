@@ -25,7 +25,8 @@ public class PlayerApiClient {
         this.httpClient = HttpClient.newHttpClient();
         this.objectMapper = new ObjectMapper();
         this.objectMapper.registerModule(new JavaTimeModule());
-        this.objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
     }
 
     public CompletableFuture<PlayerProfile> loginOrRegisterPlayer(String username) {

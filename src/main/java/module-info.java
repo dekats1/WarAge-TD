@@ -5,6 +5,7 @@ module WarAge.TD {
 
     // Add this line for the Jackson JavaTime module
     requires com.fasterxml.jackson.datatype.jsr310;
+    requires static lombok;
 
     // Open packages for FXML
     opens com.warage to javafx.fxml;
