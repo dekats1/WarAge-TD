@@ -57,7 +57,7 @@ public class TowerDefenseGameApp extends GameApplication {
         rootUI = new StackPane();
         addUINode(rootUI);
 
-        showCareerMapUI();
+        showLoginUI();
     }
 
     private void setUI(Node Ui){

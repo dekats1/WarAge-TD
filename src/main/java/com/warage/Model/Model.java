@@ -3,7 +3,7 @@ package com.warage.Model;
 
 public class Model {
     private static Model model;
-
+    private PlayerProfile player;
 
     public synchronized static Model getInstance() {
         if (model == null) {
@@ -12,4 +12,7 @@ public class Model {
         return model;
     }
 
+    public PlayerProfile getPlayer() {return player;}
+
+    public void setPlayer(PlayerProfile player) {this.player = player;}
 }

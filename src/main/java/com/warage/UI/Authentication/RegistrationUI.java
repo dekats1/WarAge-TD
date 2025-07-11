@@ -80,13 +80,13 @@ public class RegistrationUI {
         root.getChildren().add(passwordField);
 
         // Поле подтверждения пароля
-        verifyPasswordField = new PasswordField(); // <-- Инициализируем здесь
+        verifyPasswordField = new PasswordField();
         verifyPasswordField.setLayoutX(780.0);
         verifyPasswordField.setLayoutY(550.0);
         root.getChildren().add(verifyPasswordField);
 
         // Поле для почты
-        emailField = new TextField(); // <-- Инициализируем здесь
+        emailField = new TextField();
         emailField.setLayoutX(779.0);
         emailField.setLayoutY(413.0);
         root.getChildren().add(emailField);
@@ -129,7 +129,7 @@ public class RegistrationUI {
         root.getChildren().add(emailLabel);
 
         // CheckBox "Ознакомлен и согласен с"
-        rulesCheckBox = new CheckBox("Ознакомлен и согласен с"); // <-- Инициализируем здесь
+        rulesCheckBox = new CheckBox("Ознакомлен и согласен с");
         rulesCheckBox.setLayoutX(630.0);
         rulesCheckBox.setLayoutY(617.0);
         rulesCheckBox.setMnemonicParsing(false);
@@ -157,7 +157,6 @@ public class RegistrationUI {
         loginButton.setOnAction(e -> toLoginUI.run());
     }
 
-    // Метод registation теперь не статический
     private void registation(Button registrationButton, Runnable toMainWindowUI) { // Убрано static
         String username = loginField.getText().trim(); // Теперь доступно
         String password = passwordField.getText(); // Теперь доступно

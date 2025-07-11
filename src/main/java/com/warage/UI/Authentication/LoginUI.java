@@ -1,6 +1,9 @@
 package com.warage.UI.Authentication;
 
+import com.warage.Model.Model;
+import com.warage.Service.PlayerApiClient;
 import com.warage.Views.TimeChecker;
+import javafx.application.Platform;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
@@ -9,6 +12,7 @@ import javafx.scene.image.Image;
 
 public class LoginUI {
     private AnchorPane root;
+    private PlayerApiClient playerApiClient;
 
     public LoginUI(Runnable onLoginSuccess, Runnable toRegistration) {
         root = new AnchorPane();
@@ -87,8 +91,22 @@ public class LoginUI {
         loginButton.setLayoutY(653);
         loginButton.setPrefSize(116, 48);
         loginButton.setOnAction(e -> {
+            String login = loginField.getText().trim();
+            String password = passwordField.getText().trim();
+            if(login.isEmpty() || password.isEmpty()) {
+                System.out.println("ЗАПОЛНИ ВСЕ ПОЛЯ");
+            }
+            playerApiClient.loginPlayer(login, password).thenAccept(playerProfile ->{
+                Platform.runLater(()->{
+                    if(playerProfile != null) {
+                        Model.getInstance().setPlayer(playerProfile);
+                        onLoginSuccess.run();
+                    }else{
+                        System.out.println("Ошибка входа");
+                    }
+                });
+            });
 
-            onLoginSuccess.run();
         });
         root.getChildren().add(loginButton);
 
