@@ -20,13 +20,10 @@ public class AchievementWindowUI {
     private Button unCompletedAchievementsButton;
     private Button completedAchievementsButton;
     private PlayerAchievementsApi playerAchievementsApi = new PlayerAchievementsApi();
-    // Тестовые достижения
-    private List<PlayerAchievement> allAchievements = new ArrayList<>();
+
+    private List<PlayerAchievement> allAchievements;
 
     public AchievementWindowUI() {
-        playerAchievementsApi.getAllPlayerAchievements().thenAccept(playerAchievements -> {
-            this.allAchievements = playerAchievements;
-        });
         // Основной корневой контейнер
         root = new AnchorPane();
         root.getStylesheets().add(getClass().getResource("/Styles/Achievements.css").toExternalForm());
@@ -114,16 +111,19 @@ public class AchievementWindowUI {
         root.getChildren().add(closeButton);
 
         // ТУТ ВЫЗОВ РЕНДЕРИНГА
-        Platform.runLater(() -> {
-            refreshAllAchievements(contentVBox);
-            contentVBox.applyCss();
-            contentVBox.layout();
+        playerAchievementsApi.getAllPlayerAchievements().thenAccept(playerAchievements -> {
+            this.allAchievements = playerAchievements;
+            Platform.runLater(() -> {
+                refreshAllAchievements(contentVBox);
+                contentVBox.applyCss();
+                contentVBox.layout();
+                refreshAllAchievements(contentVBox);
+            });
         });
+
     }
 
-    public AnchorPane getRoot() {
-        return root;
-    }
+    public AnchorPane getRoot() {return root;}
 
     // Заполнение всех достижений
     private void refreshAllAchievements(VBox contentVBox) {
@@ -174,7 +174,7 @@ public class AchievementWindowUI {
 
     // Создание элемента UI
     private Node createAchievementUI(PlayerAchievement element) {
-        return element.getDateAchieved()==null
+        return element.getDateAchieved()!=null
                 ? new CompleteAchievementUI(element).getRoot()
                 : new UnCompleteAchievement(element).getRoot();
     }
