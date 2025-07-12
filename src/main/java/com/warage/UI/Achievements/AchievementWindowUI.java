@@ -114,12 +114,12 @@ public class AchievementWindowUI {
         playerAchievementsApi.getAllPlayerAchievements().thenAccept(playerAchievements -> {
             this.allAchievements = playerAchievements;
             Platform.runLater(() -> {
-                refreshAllAchievements(contentVBox);
                 contentVBox.applyCss();
                 contentVBox.layout();
                 refreshAllAchievements(contentVBox);
             });
         });
+
 
     }
 
@@ -142,7 +142,7 @@ public class AchievementWindowUI {
 
     // Метод для заполнения выполненных достижек
     private void refreshCompletedAchievements(VBox contentVBox) {
-        List<PlayerAchievement> completedAchievements = allAchievements.stream().filter(achievement->achievement.getDateAchieved()!=null).collect(Collectors.toList());
+        List<PlayerAchievement> completedAchievements = allAchievements.stream().filter(achievement->achievement.getProgress()==achievement.getAchievement().getNeedToReward()).collect(Collectors.toList());
         for(int i = 0; i < completedAchievements.size(); i += 2) {
             HBox row = new HBox(30);
             row.setAlignment(Pos.TOP_CENTER);
@@ -158,7 +158,7 @@ public class AchievementWindowUI {
 
     // Метод для заполнения невыполненных достижек
     private void refreshUnCompletedAchievements(VBox contentVBox) {
-        List<PlayerAchievement> unCompletedAchievements = allAchievements.stream().filter(achievement -> achievement.getDateAchieved()==null).collect(Collectors.toList());
+        List<PlayerAchievement> unCompletedAchievements = allAchievements.stream().filter(achievement -> achievement.getProgress()<achievement.getAchievement().getNeedToReward()).collect(Collectors.toList());
         for(int i = 0; i<unCompletedAchievements.size(); i += 2) {
             HBox row = new HBox(30);
             row.setAlignment(Pos.TOP_CENTER);
@@ -174,7 +174,7 @@ public class AchievementWindowUI {
 
     // Создание элемента UI
     private Node createAchievementUI(PlayerAchievement element) {
-        return element.getDateAchieved()!=null
+        return element.getProgress()==element.getAchievement().getNeedToReward()
                 ? new CompleteAchievementUI(element).getRoot()
                 : new UnCompleteAchievement(element).getRoot();
     }

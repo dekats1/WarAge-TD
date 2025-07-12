@@ -5,6 +5,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -37,6 +38,7 @@ public class CompleteAchievementUI {
         avatarImage.setFitHeight(70);
         avatarImage.setPreserveRatio(true);
         avatarImage.setPickOnBounds(true);
+        avatarImage.setImage(new Image(getClass().getResourceAsStream(element.getAchievement().getPhotoPath())));
 
         StackPane avatarStack = new StackPane();
         avatarStack.setPrefSize(100, 100);

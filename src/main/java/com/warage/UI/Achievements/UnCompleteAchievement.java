@@ -4,6 +4,7 @@ import com.warage.Model.PlayerAchievement;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -36,18 +37,17 @@ public class UnCompleteAchievement {
         avatarCircle.setFill(Color.web("#808080"));
 
         ImageView avatarImage = new ImageView();
-        avatarImage.setFitWidth(70);
-        avatarImage.setFitHeight(70);
+        avatarImage.setFitWidth(130);
+        avatarImage.setFitHeight(130);
         avatarImage.setPreserveRatio(true);
         avatarImage.setPickOnBounds(true);
-        // avatarImage.setImage(new Image(getClass().getResourceAsStream("/path/to/image.png")));
+        avatarImage.setImage(new Image(getClass().getResourceAsStream(element.getAchievement().getPhotoPath())));
 
         StackPane avatarStack = new StackPane(avatarCircle, avatarImage);
         avatarStack.setPrefSize(100, 100);
 
         HBox avatarBox = new HBox(20, avatarStack);
         avatarBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-        avatarBox.setPadding(new Insets(15, 25, 15, 25));
 
         // Заголовок
         Label titleLabel = new Label(element.getAchievement().getName());
@@ -82,18 +82,27 @@ public class UnCompleteAchievement {
         progressBarBackground.setStroke(Color.TRANSPARENT);
 
         progressBarFill = new Rectangle(110, 15);
+        calculateProgressLine(progressBarBackground,element.getProgress(),element.getAchievement().getNeedToReward());
         progressBarFill.setArcWidth(20);
         progressBarFill.setArcHeight(20);
         progressBarFill.setFill(Color.web("#00BFFF"));
         progressBarFill.setStroke(Color.TRANSPARENT);
+        StackPane fillWrapper = new StackPane(progressBarFill);
+        fillWrapper.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
 
-        progressText = new Label(String.valueOf(element.getProgress()));
+        progressText = new Label(element.getProgress()+"/"+element.getAchievement().getNeedToReward());
         progressText.setTextFill(Color.WHITE);
         progressText.setFont(Font.font(12));
         progressText.getStyleClass().add("achievement-progress");
 
-        progressBar.getChildren().addAll(progressBarBackground, progressBarFill, progressText);
+        progressBar.getChildren().addAll(progressBarBackground, fillWrapper, progressText);
         root.getChildren().addAll(background, avatarBox, titleLabel, descriptionLabel, progressBar);
+    }
+
+
+    private void calculateProgressLine(Rectangle progressBarBackground,int now,int need) {
+        double width =  (double) now/need;
+        progressBarFill.setWidth(progressBarBackground.getWidth()*width);
     }
 
     public AnchorPane getRoot() {
