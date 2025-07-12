@@ -90,6 +90,7 @@ public class LoginUI {
         loginButton.setLayoutX(720);
         loginButton.setLayoutY(653);
         loginButton.setPrefSize(116, 48);
+        loginButton.getStyleClass().add("auth");
         loginButton.setOnAction(e -> {
             String login = loginField.getText().trim();
             String password = passwordField.getText().trim();
@@ -120,7 +121,7 @@ public class LoginUI {
         Button registerButton = new Button("Зарегистрироваться");
         registerButton.setLayoutX(773);
         registerButton.setLayoutY(722);
-        registerButton.getStyleClass().add("hyperlink-button");
+        registerButton.getStyleClass().add("hyperlink");
         registerButton.setOnAction(e -> toRegistration.run());
         root.getChildren().add(registerButton);
     }

@@ -1,5 +1,6 @@
 package com.warage.UI;
 
+import com.warage.Model.Model;
 import com.warage.UI.Achievements.AchievementWindowUI;
 import com.warage.Views.TimeChecker;
 import javafx.scene.Node;
@@ -27,7 +28,7 @@ public class MenuUI {
         backgroundImage.setFitWidth(1600.0);
         backgroundImage.setLayoutX(-1.0);
         backgroundImage.setPickOnBounds(true);
-        TimeChecker.setBackgroundImageOnMain(backgroundImage);
+        boolean isNight = TimeChecker.setBackgroundImageOnMain(backgroundImage);
         AnchorPane.setTopAnchor(backgroundImage, 0.0);
         AnchorPane.setBottomAnchor(backgroundImage, 0.0);
         AnchorPane.setLeftAnchor(backgroundImage, 0.0);
@@ -41,7 +42,7 @@ public class MenuUI {
         creditsImage.setPickOnBounds(true);
         creditsImage.setImage(new Image(getClass().getResourceAsStream("/Image/Credits.png")));
 
-        Label creditsLabel = new Label("$5550");
+        Label creditsLabel = new Label("$"+ Model.getInstance().getPlayer().getMoney());
         creditsLabel.setLayoutX(1310);
         creditsLabel.setLayoutY(35);
         creditsLabel.setPrefWidth(180.0);
@@ -50,7 +51,17 @@ public class MenuUI {
 
         root.getChildren().addAll(creditsImage, creditsLabel);
 
-        // Start Game Button
+        // Start Game
+        ImageView playImage = new ImageView();
+        playImage.setFitHeight(127.0);
+        playImage.setFitWidth(127.0);
+        playImage.setLayoutX(692.0);
+        playImage.setLayoutY(629.0);
+        playImage.setPickOnBounds(true);
+        playImage.setPreserveRatio(true);
+        playImage.setImage(new Image(getClass().getResource("/Image/play.png").toExternalForm()));
+        root.getChildren().add(playImage);
+
         Button startGameButton = new Button();
         startGameButton.setLayoutX(689.0);
         startGameButton.setLayoutY(628.0);
@@ -59,22 +70,11 @@ public class MenuUI {
         startGameButton.setPrefHeight(127.0);
         startGameButton.setPrefWidth(135.0);
         startGameButton.setMnemonicParsing(false);
-        startGameButton.setStyle("-fx-background-color: transparent; -fx-border-color: transparent;");
         startGameButton.getStyleClass().add("round-button");
-
-        // Graphic for Start Game Button
-        ImageView playImage = new ImageView();
-        playImage.setFitHeight(150.0);
-        playImage.setFitWidth(128.0);
-        playImage.setPickOnBounds(true);
-        playImage.setPreserveRatio(true);
-        playImage.setImage(new Image(getClass().getResource("/Image/play.png").toExternalForm()));
-        startGameButton.setGraphic(playImage);
         root.getChildren().add(startGameButton);
 
-        // Label for Start Game Button
         Label startGameLabel = new Label("ИГРАТЬ");
-        startGameLabel.setLayoutX(688.0);
+        startGameLabel.setLayoutX(677.0);
         startGameLabel.setLayoutY(731.0);
         startGameLabel.setMinWidth(96.0);
         startGameLabel.setPrefHeight(40.0);
@@ -82,25 +82,28 @@ public class MenuUI {
         startGameLabel.getStyleClass().add("round-button-label");
         root.getChildren().add(startGameLabel);
 
-        // Awards Button
+        // Achievement Button
+        ImageView achievementImage = new ImageView();
+        achievementImage.setFitHeight(160.0);
+        achievementImage.setFitWidth(160.0);
+        achievementImage.setLayoutX(210.0);
+        achievementImage.setLayoutY(620.0);
+        achievementImage.setPickOnBounds(true);
+        achievementImage.setPreserveRatio(true);
+        achievementImage.setImage(new Image(getClass().getResource("/Image/Achievements.png").toExternalForm()));
+        root.getChildren().add(achievementImage);
+
         Button awardsButton = new Button();
-        awardsButton.setLayoutX(225.0);
-        awardsButton.setLayoutY(633.0);
+        awardsButton.setLayoutX(222.0);
+        awardsButton.setLayoutY(635.0);
         awardsButton.setMaxHeight(202.0);
         awardsButton.setMaxWidth(221.0);
         awardsButton.setPrefHeight(127.0);
         awardsButton.setPrefWidth(135.0);
         awardsButton.setMnemonicParsing(false);
         awardsButton.getStyleClass().add("round-button");
-
-        ImageView achievementImage = new ImageView();
-        achievementImage.setFitHeight(150.0);
-        achievementImage.setFitWidth(128.0);
-        achievementImage.setPickOnBounds(true);
-        achievementImage.setPreserveRatio(true);
-        achievementImage.setImage(new Image(getClass().getResource("/Image/Achievements.png").toExternalForm()));
-        awardsButton.setGraphic(achievementImage);
         root.getChildren().add(awardsButton);
+
         awardsButton.setOnAction(event -> {
             AchievementWindowUI achievementWindowUI = new AchievementWindowUI();
             achievementWindow.accept(achievementWindowUI.getRoot());
@@ -132,6 +135,16 @@ public class MenuUI {
         root.getChildren().add(shopButton);
 
         // Heroes Button
+        ImageView heroeImage = new ImageView();
+        heroeImage.setFitHeight(180.0);
+        heroeImage.setFitWidth(180.0);
+        heroeImage.setLayoutX(447.0);
+        heroeImage.setLayoutY(590.0);
+        heroeImage.setPickOnBounds(true);
+        heroeImage.setPreserveRatio(true);
+        heroeImage.setImage(new Image(getClass().getResource("/Image/hero.png").toExternalForm()));
+        root.getChildren().add(heroeImage);
+
         Button heroesButton = new Button();
         heroesButton.setLayoutX(467.0);
         heroesButton.setLayoutY(633.0);
@@ -194,6 +207,22 @@ public class MenuUI {
         shopLabel.setPrefWidth(96.0);
         shopLabel.getStyleClass().add("round-button-label");
         root.getChildren().add(shopLabel);
+
+        if (isNight) {
+            awardsButton.getStyleClass().setAll("round-button", "night-mode");
+            heroesButton.getStyleClass().setAll("round-button", "night-mode");
+            companyButton.getStyleClass().setAll("round-button", "night-mode");
+            shopButton.getStyleClass().setAll("round-button", "night-mode");
+            startGameButton.getStyleClass().setAll("round-button", "night-mode");
+
+            shopLabel.getStyleClass().setAll("round-button-label", "night-mode");
+            startGameLabel.getStyleClass().setAll("round-button-label", "night-mode");
+            heroesLabel.getStyleClass().setAll("round-button-label", "night-mode");
+            awardsLabel.getStyleClass().setAll("round-button-label", "night-mode");
+            companyLabel.getStyleClass().setAll("round-button-label", "night-mode");
+
+            creditsLabel.getStyleClass().setAll("money-value-label", "night-mode");
+        }
     }
 
     public Pane getRoot() {
