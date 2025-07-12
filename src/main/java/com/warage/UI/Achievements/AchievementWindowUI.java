@@ -1,7 +1,6 @@
 package com.warage.UI.Achievements;
 
 import com.warage.Model.PlayerAchievement;
-import com.warage.Model.Test;
 import com.warage.Service.PlayerAchievementsApi;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -22,11 +21,11 @@ public class AchievementWindowUI {
     private Button completedAchievementsButton;
     private PlayerAchievementsApi playerAchievementsApi = new PlayerAchievementsApi();
     // Тестовые достижения
-    private List<PlayerAchievement> allAchievemnts = new ArrayList<>();
+    private List<PlayerAchievement> allAchievements = new ArrayList<>();
 
     public AchievementWindowUI() {
         playerAchievementsApi.getAllPlayerAchievements().thenAccept(playerAchievements -> {
-            this.allAchievemnts = playerAchievements;
+            this.allAchievements = playerAchievements;
         });
         // Основной корневой контейнер
         root = new AnchorPane();
@@ -75,7 +74,7 @@ public class AchievementWindowUI {
         allAchievementsButton.setOnAction(event -> {
             contentVBox.getChildren().clear();
             refreshButtonStyles(allAchievementsButton);
-            //refreshAllAchievements(contentVBox);
+            refreshAllAchievements(contentVBox);
         });
 
         unCompletedAchievementsButton = new Button("Невыполненные достижения");
@@ -88,7 +87,7 @@ public class AchievementWindowUI {
         unCompletedAchievementsButton.setOnAction(event -> {
             contentVBox.getChildren().clear();
             refreshButtonStyles(unCompletedAchievementsButton);
-            //refreshUnCompletedAchievements(contentVBox);
+            refreshUnCompletedAchievements(contentVBox);
         });
 
         completedAchievementsButton = new Button("Выполненные достижения");
@@ -101,7 +100,7 @@ public class AchievementWindowUI {
         completedAchievementsButton.setOnAction(event -> {
             contentVBox.getChildren().clear();
             refreshButtonStyles(completedAchievementsButton);
-           // refreshCompletedAchievements(contentVBox);
+            refreshCompletedAchievements(contentVBox);
         });
 
         // Кнопка закрытия
@@ -116,7 +115,7 @@ public class AchievementWindowUI {
 
         // ТУТ ВЫЗОВ РЕНДЕРИНГА
         Platform.runLater(() -> {
-            //refreshAllAchievements(contentVBox);
+            refreshAllAchievements(contentVBox);
             contentVBox.applyCss();
             contentVBox.layout();
         });
@@ -127,55 +126,55 @@ public class AchievementWindowUI {
     }
 
     // Заполнение всех достижений
-//    private void refreshAllAchievements(VBox contentVBox) {
-//        for (int i = 0; i < allAchievemnts.size(); i += 2) {
-//            HBox row = new HBox(30);
-//            row.setAlignment(Pos.TOP_CENTER);
-//            PlayerAchievement first = allAchievemnts.get(i);
-//            row.getChildren().add(createAchievementUI(first));
-//            if (i + 1 < allAchievemnts.size()) {
-//                PlayerAchievement second = allAchievemnts.get(i + 1);
-//                row.getChildren().add(createAchievementUI(second));
-//            }
-//            contentVBox.getChildren().add(row);
-//        }
-//    }
+    private void refreshAllAchievements(VBox contentVBox) {
+        for (int i = 0; i < allAchievements.size(); i += 2) {
+            HBox row = new HBox(30);
+            row.setAlignment(Pos.TOP_CENTER);
+            PlayerAchievement first = allAchievements.get(i);
+            row.getChildren().add(createAchievementUI(first));
+            if (i + 1 < allAchievements.size()) {
+                PlayerAchievement second = allAchievements.get(i + 1);
+                row.getChildren().add(createAchievementUI(second));
+            }
+            contentVBox.getChildren().add(row);
+        }
+    }
 
     // Метод для заполнения выполненных достижек
-//    private void refreshCompletedAchievements(VBox contentVBox) {
-//        List<Test> completedAchievements = allAchievemnts.stream().filter(PlayerAchievement::isReady).collect(Collectors.toList());
-//        for(int i = 0; i < completedAchievements.size(); i += 2) {
-//            HBox row = new HBox(30);
-//            row.setAlignment(Pos.TOP_CENTER);
-//            Test first = completedAchievements.get(i);
-//            row.getChildren().add(createAchievementUI(first));
-//            if (i + 1 < completedAchievements.size()) {
-//                Test second = completedAchievements.get(i + 1);
-//                row.getChildren().add(createAchievementUI(second));
-//            }
-//            contentVBox.getChildren().add(row);
-//        }
-//    }
-//
-//    // Метод для заполнения невыполненных достижек
-//    private void refreshUnCompletedAchievements(VBox contentVBox) {
-//        List<Test> unCompletedAchievements = allAchievemnts.stream().filter(achievement -> !achievement.isReady()).collect(Collectors.toList());
-//        for(int i = 0; i<unCompletedAchievements.size(); i += 2) {
-//            HBox row = new HBox(30);
-//            row.setAlignment(Pos.TOP_CENTER);
-//            Test first = unCompletedAchievements.get(i);
-//            row.getChildren().add(createAchievementUI(first));
-//            if(i+1<unCompletedAchievements.size()) {
-//                Test second = unCompletedAchievements.get(i + 1);
-//                row.getChildren().add(createAchievementUI(second));
-//            }
-//            contentVBox.getChildren().add(row);
-//        }
-//    }
+    private void refreshCompletedAchievements(VBox contentVBox) {
+        List<PlayerAchievement> completedAchievements = allAchievements.stream().filter(achievement->achievement.getDateAchieved()!=null).collect(Collectors.toList());
+        for(int i = 0; i < completedAchievements.size(); i += 2) {
+            HBox row = new HBox(30);
+            row.setAlignment(Pos.TOP_CENTER);
+            PlayerAchievement first = completedAchievements.get(i);
+            row.getChildren().add(createAchievementUI(first));
+            if (i + 1 < completedAchievements.size()) {
+                PlayerAchievement second = completedAchievements.get(i + 1);
+                row.getChildren().add(createAchievementUI(second));
+            }
+            contentVBox.getChildren().add(row);
+        }
+    }
+
+    // Метод для заполнения невыполненных достижек
+    private void refreshUnCompletedAchievements(VBox contentVBox) {
+        List<PlayerAchievement> unCompletedAchievements = allAchievements.stream().filter(achievement -> achievement.getDateAchieved()==null).collect(Collectors.toList());
+        for(int i = 0; i<unCompletedAchievements.size(); i += 2) {
+            HBox row = new HBox(30);
+            row.setAlignment(Pos.TOP_CENTER);
+            PlayerAchievement first = unCompletedAchievements.get(i);
+            row.getChildren().add(createAchievementUI(first));
+            if(i+1<unCompletedAchievements.size()) {
+                PlayerAchievement second = unCompletedAchievements.get(i + 1);
+                row.getChildren().add(createAchievementUI(second));
+            }
+            contentVBox.getChildren().add(row);
+        }
+    }
 
     // Создание элемента UI
-    private Node createAchievementUI(Test element) {
-        return element.isReady()
+    private Node createAchievementUI(PlayerAchievement element) {
+        return element.getDateAchieved()==null
                 ? new CompleteAchievementUI(element).getRoot()
                 : new UnCompleteAchievement(element).getRoot();
     }

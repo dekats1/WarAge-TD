@@ -1,12 +1,10 @@
 package com.warage.UI.Achievements;
 
-import com.warage.Model.Test;
+import com.warage.Model.PlayerAchievement;
 import javafx.scene.layout.AnchorPane;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -16,7 +14,7 @@ import javafx.scene.text.Font;
 
 public class CompleteAchievementUI {
     private AnchorPane root;
-    public CompleteAchievementUI(Test element) {
+    public CompleteAchievementUI(PlayerAchievement element) {
         root = new AnchorPane();
         root.setPrefSize(429, 141);
         root.getStyleClass().add("achievement-tile");
@@ -50,7 +48,7 @@ public class CompleteAchievementUI {
         avatarBox.getChildren().add(avatarStack);
 
         // Заголовок достижения
-        Label titleLabel = new Label(element.getName());
+        Label titleLabel = new Label(element.getAchievement().getName());
         titleLabel.setLayoutX(131);
         titleLabel.setLayoutY(8);
         titleLabel.setTextFill(Color.WHITE);
@@ -58,7 +56,7 @@ public class CompleteAchievementUI {
         titleLabel.getStyleClass().add("achievement-title");
 
         // Описание достижения
-        Label descriptionLabel = new Label(element.getDescription());
+        Label descriptionLabel = new Label(element.getAchievement().getDescription());
         descriptionLabel.setLayoutX(138);
         descriptionLabel.setLayoutY(48);
         descriptionLabel.setPrefSize(289, 45);
@@ -68,7 +66,7 @@ public class CompleteAchievementUI {
         descriptionLabel.getStyleClass().add("achievement-description");
 
         // Прогресс или дата получения
-        Label progressLabel = new Label("Получено: "+ element.getDate());
+        Label progressLabel = new Label("Получено: "+ element.getDateAchieved());
         progressLabel.setLayoutX(138);
         progressLabel.setLayoutY(102);
         progressLabel.setTextFill(Color.web("#BBF0F0"));

@@ -1,6 +1,6 @@
 package com.warage.UI.Achievements;
 
-import com.warage.Model.Test;
+import com.warage.Model.PlayerAchievement;
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -17,7 +17,7 @@ public class UnCompleteAchievement {
     private Rectangle progressBarFill;
     private Label progressText;
 
-    public UnCompleteAchievement(Test element) {
+    public UnCompleteAchievement(PlayerAchievement element) {
         root = new AnchorPane();
         root.setPrefSize(429, 141);
         root.getStyleClass().add("uncompleted-achievement-tile");
@@ -50,7 +50,7 @@ public class UnCompleteAchievement {
         avatarBox.setPadding(new Insets(15, 25, 15, 25));
 
         // Заголовок
-        Label titleLabel = new Label(element.getName());
+        Label titleLabel = new Label(element.getAchievement().getName());
         titleLabel.setLayoutX(125);
         titleLabel.setLayoutY(12);
         titleLabel.setPrefSize(296, 56);
@@ -60,7 +60,7 @@ public class UnCompleteAchievement {
         titleLabel.getStyleClass().add("achievement-title");
 
         // Описание
-        Label descriptionLabel = new Label(element.getDescription());
+        Label descriptionLabel = new Label(element.getAchievement().getDescription());
         descriptionLabel.setLayoutX(125);
         descriptionLabel.setLayoutY(59);
         descriptionLabel.setPrefSize(296, 32);
@@ -87,7 +87,7 @@ public class UnCompleteAchievement {
         progressBarFill.setFill(Color.web("#00BFFF"));
         progressBarFill.setStroke(Color.TRANSPARENT);
 
-        progressText = new Label(element.getProgress());
+        progressText = new Label(String.valueOf(element.getProgress()));
         progressText.setTextFill(Color.WHITE);
         progressText.setFont(Font.font(12));
         progressText.getStyleClass().add("achievement-progress");
