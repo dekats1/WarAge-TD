@@ -63,7 +63,7 @@ public class UnCompleteAchievement {
         Label descriptionLabel = new Label(element.getAchievement().getDescription());
         descriptionLabel.setLayoutX(125);
         descriptionLabel.setLayoutY(59);
-        descriptionLabel.setPrefSize(296, 32);
+        descriptionLabel.setPrefSize(289, 45);
         descriptionLabel.setWrapText(true);
         descriptionLabel.setTextFill(Color.web("#CCCCCC"));
         descriptionLabel.setFont(Font.font(14));

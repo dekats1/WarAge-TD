@@ -1,6 +1,7 @@
 package com.warage.Views;
 
 import com.warage.Utils.ImageLoaderUtil;
+import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 
 import java.time.LocalTime;
@@ -24,7 +25,7 @@ public class TimeChecker {
         }
     }
 
-    public static void setBackgroundImageOnMain(ImageView backgroundImage) {
+    public static boolean setBackgroundImageOnMain(ImageView backgroundImage) {
         LocalTime now = LocalTime.now();
         boolean isNight;
         if (startTime.isBefore(endTime)) {
@@ -37,5 +38,6 @@ public class TimeChecker {
         }else{
             backgroundImage.setImage(ImageLoaderUtil.loadImage("/Image/MenuDay.png"));
         }
+        return isNight;
     }
 }

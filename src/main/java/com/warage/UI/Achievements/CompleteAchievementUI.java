@@ -20,7 +20,7 @@ public class CompleteAchievementUI {
         root.setPrefSize(429, 141);
         root.getStyleClass().add("achievement-tile");
         root.getStylesheets().add(getClass().getResource("/Styles/Achievements.css").toExternalForm());
-        root.setPadding(new Insets(10, 10, 10, 10));
+        root.setPadding(new Insets(7, 7, 7, 7));
 
         // Прямоугольный фон
         Rectangle background = new Rectangle(430, 140);
@@ -34,24 +34,22 @@ public class CompleteAchievementUI {
         avatarCircle.setFill(Color.web("#FFD700"));
 
         ImageView avatarImage = new ImageView();
-        avatarImage.setFitWidth(70);
-        avatarImage.setFitHeight(70);
+        avatarImage.setFitWidth(130);
+        avatarImage.setFitHeight(130);
         avatarImage.setPreserveRatio(true);
         avatarImage.setPickOnBounds(true);
         avatarImage.setImage(new Image(getClass().getResourceAsStream(element.getAchievement().getPhotoPath())));
 
-        StackPane avatarStack = new StackPane();
+        StackPane avatarStack = new StackPane(avatarCircle, avatarImage);
         avatarStack.setPrefSize(100, 100);
-        avatarStack.getChildren().addAll(avatarCircle, avatarImage);
 
-        HBox avatarBox = new HBox(20);
+        HBox avatarBox = new HBox(20, avatarStack);
         avatarBox.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
-        avatarBox.setPadding(new Insets(15, 25, 15, 25));
-        avatarBox.getChildren().add(avatarStack);
 
         // Заголовок достижения
         Label titleLabel = new Label(element.getAchievement().getName());
         titleLabel.setLayoutX(131);
+        titleLabel.setWrapText(true);
         titleLabel.setLayoutY(8);
         titleLabel.setTextFill(Color.WHITE);
         titleLabel.setFont(Font.font("System Bold", 24));

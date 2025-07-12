@@ -40,7 +40,7 @@
 }
 
 /* Кнопка "Войти" */
-.button {
+.auth{
     -fx-background-color: #e74c3c;
     -fx-text-fill: white;
     -fx-font-size: 16px;
@@ -52,7 +52,7 @@
     -fx-transition: all 0.3s ease-in-out;
 }
 
-.button:hover {
+.auth:hover {
     -fx-background-color: #c0392b;
 }
 
@@ -76,8 +76,10 @@
 }
 
 /* Гиперссылка для перехода на регистрацию */
-.hyperlink-button {
+.hyperlink{
     -fx-background-color: transparent;
+    -fx-background-radius: 8px;
+    -fx-border-radius: 8px;
     -fx-text-fill: #3498db;
     -fx-font-size: 14px;
     -fx-font-weight: bold;
@@ -86,6 +88,6 @@
     -fx-padding: 4px;
 }
 
-.hyperlink-button:hover {
-    -fx-text-fill: #2980b9;
+.hyperlink:hover {
+    -fx-text-fill: #0684d5;
 }
