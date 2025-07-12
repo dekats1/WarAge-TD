@@ -9,24 +9,29 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
 public class AchievementWindowUI {
+    @Getter
     private AnchorPane root;
-    private  Button allAchievementsButton;
-    private Button unCompletedAchievementsButton;
-    private Button completedAchievementsButton;
-    private PlayerAchievementsApi playerAchievementsApi = new PlayerAchievementsApi();
+    private final Button allAchievementsButton;
+    private final Button unCompletedAchievementsButton;
+    private final Button completedAchievementsButton;
 
-    private List<PlayerAchievement> allAchievements;
+    private List<PlayerAchievement> allAchievements; // Все данные достижений, загруженные один раз
+    private final VBox contentVBox; // Определяем как final, так как он создается один раз
+
+    // Новый список для хранения UI-нод достижений, созданных один раз
+    private List<HBox> achievementUIRows;
 
     public AchievementWindowUI() {
         // Основной корневой контейнер
         root = new AnchorPane();
-        root.getStylesheets().add(getClass().getResource("/Styles/Achievements.css").toExternalForm());
+        root.getStylesheets().add(Objects.requireNonNull(getClass().getResource("/Styles/Achievements.css")).toExternalForm());
 
         // Контейнер для скролла с якорями
         AnchorPane scrollContainer = new AnchorPane();
@@ -36,8 +41,8 @@ public class AchievementWindowUI {
         AnchorPane.setRightAnchor(scrollContainer, 200.0);
         scrollContainer.getStyleClass().add("achievement-window-background");
 
-        // Контент внутри скролла
-        VBox contentVBox = new VBox(20.0);
+        // Контент внутри скролла - Инициализируем здесь
+        contentVBox = new VBox(20.0); // <-- Инициализировано один раз
         contentVBox.setAlignment(Pos.TOP_CENTER);
         contentVBox.setPadding(new Insets(20.0));
         contentVBox.setPrefWidth(830.0);
@@ -69,9 +74,8 @@ public class AchievementWindowUI {
 
         //Обработчик нажатия на все достиги
         allAchievementsButton.setOnAction(event -> {
-            contentVBox.getChildren().clear();
             refreshButtonStyles(allAchievementsButton);
-            refreshAllAchievements(contentVBox);
+            filterAchievementsUI(null); // Передаем null для отображения всех
         });
 
         unCompletedAchievementsButton = new Button("Невыполненные достижения");
@@ -82,9 +86,8 @@ public class AchievementWindowUI {
 
         //Обработчик нажатия на все достиги
         unCompletedAchievementsButton.setOnAction(event -> {
-            contentVBox.getChildren().clear();
             refreshButtonStyles(unCompletedAchievementsButton);
-            refreshUnCompletedAchievements(contentVBox);
+            filterAchievementsUI(false); // false для невыполненных
         });
 
         completedAchievementsButton = new Button("Выполненные достижения");
@@ -95,9 +98,8 @@ public class AchievementWindowUI {
 
         //Обработчик нажатия на все достиги
         completedAchievementsButton.setOnAction(event -> {
-            contentVBox.getChildren().clear();
             refreshButtonStyles(completedAchievementsButton);
-            refreshCompletedAchievements(contentVBox);
+            filterAchievementsUI(true); // true для выполненных
         });
 
         // Кнопка закрытия
@@ -110,77 +112,91 @@ public class AchievementWindowUI {
         });
         root.getChildren().add(closeButton);
 
-        // ТУТ ВЫЗОВ РЕНДЕРИНГА
+        // Загрузка данных и инициализация UI-элементов
+        PlayerAchievementsApi playerAchievementsApi = new PlayerAchievementsApi();
         playerAchievementsApi.getAllPlayerAchievements().thenAccept(playerAchievements -> {
             this.allAchievements = playerAchievements;
             Platform.runLater(() -> {
-                contentVBox.applyCss();
-                contentVBox.layout();
-                refreshAllAchievements(contentVBox);
+                // Создаем все UI-элементы ОДИН раз
+                this.achievementUIRows = createAllAchievementUIRows(playerAchievements);
+                // Отображаем все достижения по умолчанию
+                filterAchievementsUI(null);
             });
+        }).exceptionally(e -> {
+            System.err.println("Failed to load achievements: " + e.getMessage());
+            Platform.runLater(() -> {
+                contentVBox.getChildren().clear();
+                contentVBox.getChildren().add(new javafx.scene.control.Label("Не удалось загрузить достижения. Попробуйте перезапустить приложение."));
+            });
+            return null;
         });
-
-
     }
 
-    public AnchorPane getRoot() {return root;}
+    private List<HBox> createAllAchievementUIRows(List<PlayerAchievement> achievements) {
+        List<HBox> rows = new ArrayList<>();
+        for (int i = 0; i < achievements.size(); i += 2) {
+            HBox row = new HBox(30);
+            row.setAlignment(Pos.TOP_CENTER);
+            PlayerAchievement first = achievements.get(i);
+            row.getChildren().add(createAchievementUI(first));
+            if (i + 1 < achievements.size()) {
+                PlayerAchievement second = achievements.get(i + 1);
+                row.getChildren().add(createAchievementUI(second));
+            }
+            rows.add(row);
+        }
+        return rows;
+    }
 
-    // Заполнение всех достижений
-    private void refreshAllAchievements(VBox contentVBox) {
+    /**
+     * Фильтрует и отображает UI-элементы достижений.
+     *
+     * @param isCompleted true для выполненных, false для невыполненных, null для всех.
+     */
+    private void filterAchievementsUI(Boolean isCompleted) {
+        if (achievementUIRows == null) {
+            return; // Данные еще не загружены
+        }
+
+        List<Node> filteredRows = new ArrayList<>();
+        // Здесь мы проходимся по ИСХОДНЫМ данным, но отображаем уже созданные UI-элементы
         for (int i = 0; i < allAchievements.size(); i += 2) {
-            HBox row = new HBox(30);
-            row.setAlignment(Pos.TOP_CENTER);
             PlayerAchievement first = allAchievements.get(i);
-            row.getChildren().add(createAchievementUI(first));
-            if (i + 1 < allAchievements.size()) {
-                PlayerAchievement second = allAchievements.get(i + 1);
-                row.getChildren().add(createAchievementUI(second));
+            PlayerAchievement second = (i + 1 < allAchievements.size()) ? allAchievements.get(i + 1) : null;
+
+            boolean shouldShowFirst = (isCompleted == null) || (isCompleted && Objects.equals(first.getProgress(), first.getAchievement().getNeedToReward())) || (!isCompleted && first.getProgress() < first.getAchievement().getNeedToReward());
+
+            boolean shouldShowSecond = (second != null) && ((isCompleted == null) || (isCompleted && Objects.equals(second.getProgress(), second.getAchievement().getNeedToReward())) || (!isCompleted && second.getProgress() < second.getAchievement().getNeedToReward()));
+
+            // Берем уже созданную HBox-строку
+            HBox currentRow = achievementUIRows.get(i / 2);
+
+            // Теперь нужно управлять видимостью отдельных элементов внутри HBox
+            Node firstAchievementNode = currentRow.getChildren().getFirst();
+            firstAchievementNode.setVisible(shouldShowFirst);
+            firstAchievementNode.setManaged(shouldShowFirst); // setManaged управляет, занимает ли элемент место в макете
+
+            if (second != null) {
+                Node secondAchievementNode = currentRow.getChildren().get(1);
+                secondAchievementNode.setVisible(shouldShowSecond);
+                secondAchievementNode.setManaged(shouldShowSecond);
             }
-            contentVBox.getChildren().add(row);
+
+            // Добавляем строку HBox в отфильтрованный список, если хотя бы один элемент в ней видим
+            if (shouldShowFirst || shouldShowSecond) {
+                filteredRows.add(currentRow);
+            }
         }
+        contentVBox.getChildren().setAll(filteredRows); // Обновляем VBox один раз
     }
 
-    // Метод для заполнения выполненных достижек
-    private void refreshCompletedAchievements(VBox contentVBox) {
-        List<PlayerAchievement> completedAchievements = allAchievements.stream().filter(achievement->achievement.getProgress()==achievement.getAchievement().getNeedToReward()).collect(Collectors.toList());
-        for(int i = 0; i < completedAchievements.size(); i += 2) {
-            HBox row = new HBox(30);
-            row.setAlignment(Pos.TOP_CENTER);
-            PlayerAchievement first = completedAchievements.get(i);
-            row.getChildren().add(createAchievementUI(first));
-            if (i + 1 < completedAchievements.size()) {
-                PlayerAchievement second = completedAchievements.get(i + 1);
-                row.getChildren().add(createAchievementUI(second));
-            }
-            contentVBox.getChildren().add(row);
-        }
-    }
 
-    // Метод для заполнения невыполненных достижек
-    private void refreshUnCompletedAchievements(VBox contentVBox) {
-        List<PlayerAchievement> unCompletedAchievements = allAchievements.stream().filter(achievement -> achievement.getProgress()<achievement.getAchievement().getNeedToReward()).collect(Collectors.toList());
-        for(int i = 0; i<unCompletedAchievements.size(); i += 2) {
-            HBox row = new HBox(30);
-            row.setAlignment(Pos.TOP_CENTER);
-            PlayerAchievement first = unCompletedAchievements.get(i);
-            row.getChildren().add(createAchievementUI(first));
-            if(i+1<unCompletedAchievements.size()) {
-                PlayerAchievement second = unCompletedAchievements.get(i + 1);
-                row.getChildren().add(createAchievementUI(second));
-            }
-            contentVBox.getChildren().add(row);
-        }
-    }
-
-    // Создание элемента UI
+    // Создание элемента UI (без изменений)
     private Node createAchievementUI(PlayerAchievement element) {
-        return element.getProgress()==element.getAchievement().getNeedToReward()
-                ? new CompleteAchievementUI(element).getRoot()
-                : new UnCompleteAchievement(element).getRoot();
+        return Objects.equals(element.getProgress(), element.getAchievement().getNeedToReward()) ? new CompleteAchievementUI(element).getRoot() : new UnCompleteAchievement(element).getRoot();
     }
 
-
-    private void refreshButtonStyles(Button activeBut){
+    private void refreshButtonStyles(Button activeBut) {
         allAchievementsButton.getStyleClass().remove("selected-button");
         allAchievementsButton.getStyleClass().add("filter-button");
 

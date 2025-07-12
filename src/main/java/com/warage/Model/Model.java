@@ -1,9 +1,12 @@
 package com.warage.Model;
 
+import lombok.Data;
 
+@Data
 public class Model {
     private static Model model;
     private PlayerProfile player;
+    private String version;
 
     public synchronized static Model getInstance() {
         if (model == null) {
@@ -11,8 +14,4 @@ public class Model {
         }
         return model;
     }
-
-    public PlayerProfile getPlayer() {return player;}
-
-    public void setPlayer(PlayerProfile player) {this.player = player;}
 }
