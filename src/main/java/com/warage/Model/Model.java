@@ -7,6 +7,8 @@ public class Model {
     private static Model model;
     private PlayerProfile player;
     private String version;
+    private String jwtToken;     // НОВОЕ ПОЛЕ
+    private String refreshToken; // НОВОЕ ПОЛЕ
 
     public synchronized static Model getInstance() {
         if (model == null) {

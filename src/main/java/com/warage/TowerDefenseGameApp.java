@@ -1,10 +1,10 @@
 package com.warage;
 
-
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
 import com.warage.Model.Model;
 import com.warage.Model.Version;
+import com.warage.Service.PlayerApiClient; // Импортируйте
 import com.warage.Service.VersionApi;
 import com.warage.UI.Authentication.LoginUI;
 import com.warage.UI.Authentication.RegistrationUI;
@@ -12,17 +12,20 @@ import com.warage.UI.CareerGameUI.CareerMapUI;
 import com.warage.UI.MainMenuUI;
 import com.warage.UI.MenuUI;
 import com.warage.UI.SettingsUI;
+import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
 
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.CompletableFuture; // Импорт для CompletableFuture
 
 import static com.almasb.fxgl.dsl.FXGLForKtKt.addUINode;
 
 public class TowerDefenseGameApp extends GameApplication {
     private StackPane rootUI;
+    private PlayerApiClient playerApiClient; // Добавьте это
 
     @Override
     protected void initSettings(GameSettings settings) {
@@ -32,42 +35,18 @@ public class TowerDefenseGameApp extends GameApplication {
         settings.setTitle("WarAge");
         Version currentVersion = null;
         try {
-
             Optional<?> versionOptional = versionApi.getLatestVersion().get(5, TimeUnit.SECONDS);
-
             if (versionOptional.isPresent()) {
                 currentVersion = (Version) versionOptional.get();
-                settings.setVersion(currentVersion.getVersion());
-                System.out.println("Application initialized with version: " + currentVersion.getVersion());
+                Model.getInstance().setVersion(currentVersion.getVersion());
             } else {
-                System.err.println("Failed to retrieve application version (empty Optional). Using default.");
-                settings.setVersion("Unknown Version"); // Установим версию по умолчанию
+                System.err.println("Failed to get latest version from API. Using default.");
+                Model.getInstance().setVersion("1.0.0"); // Fallback
             }
-        } catch (InterruptedException | ExecutionException e) {
-            System.err.println("Error fetching latest version, using default: " + e.getMessage());
-            settings.setVersion("Error Version"); // Установим версию по умолчанию при ошибке
-            e.printStackTrace(); // Для отладки
-        } catch (java.util.concurrent.TimeoutException e) {
-            System.err.println("Timeout fetching latest version, using default: " + e.getMessage());
-            settings.setVersion("Timeout Version"); // Установим версию по умолчанию при таймауте
-            e.printStackTrace();
+        } catch (InterruptedException | ExecutionException | java.util.concurrent.TimeoutException e) {
+            System.err.println("Error fetching version: " + e.getMessage());
+            Model.getInstance().setVersion("1.0.0"); // Fallback
         }
-        Model.getInstance().setVersion(settings.getVersion());
-        settings.setFullScreenFromStart(true);
-        settings.setFullScreenAllowed(true);
-    }
-
-    @Override
-    protected void initGame() {
-        // Здесь будет логика инициализации вашего игрового мира
-        // Например, загрузка карты, размещение первых башен, спавн врагов
-        //FXGL.getGameWorld().addEntityFactory(new MyTowerFactory()); // Ваша фабрика сущностей
-        // ... аиапра
-    }
-
-    @Override
-    protected void initPhysics() {
-        // Здесь будут обработчики коллизий и физика (если нужны)
     }
 
     @Override
@@ -79,8 +58,42 @@ public class TowerDefenseGameApp extends GameApplication {
     protected void initUI() {
         rootUI = new StackPane();
         addUINode(rootUI);
+        playerApiClient = new PlayerApiClient(); // Инициализация PlayerApiClient
 
-        showMenuUI();
+        // Логика автоматического входа
+        String storedJwt = playerApiClient.getStoredJwtToken();
+        String storedRefresh = playerApiClient.getStoredRefreshToken();
+        String rememberedUsername = playerApiClient.getRememberedUsername();
+
+        if (storedJwt != null && !storedJwt.isEmpty()) {
+            // Попробуйте использовать JWT для получения профиля
+            playerApiClient.getPlayerProfile(storedJwt)
+                    .thenAccept(playerProfile -> Platform.runLater(() -> {
+                        if (playerProfile != null) {
+                            Model.getInstance().setPlayer(playerProfile);
+                            System.out.println("Автоматический вход для пользователя: " + playerProfile.getUsername());
+                            showMainMenuUI(); // Успешный автологин, показываем главное меню
+                        } else {
+                            // JWT недействителен или устарел, переходим к экрану входа
+                            System.out.println("JWT недействителен, требуется повторный вход.");
+                            playerApiClient.clearStoredTokens(); // Очищаем недействительные токены
+                            showLoginUI();
+                        }
+                    }))
+                    .exceptionally(e -> {
+                        // Ошибка при проверке JWT (например, сеть, серверная ошибка),
+                        // или JWT просрочен и сервер вернул 401/403.
+                        // Здесь можно было бы попытаться обновить токен с помощью refreshToken.
+                        // Для простоты, пока просто переходим к экрану входа.
+                        System.err.println("Ошибка при автологине с JWT: " + e.getMessage());
+                        playerApiClient.clearStoredTokens(); // Очищаем токены, которые вызвали ошибку
+                        Platform.runLater(this::showLoginUI);
+                        return null;
+                    });
+        } else {
+            // Нет сохраненных токенов, показываем UI входа
+            showLoginUI();
+        }
     }
 
     private void setUI(Node Ui){
@@ -114,13 +127,11 @@ public class TowerDefenseGameApp extends GameApplication {
         setUI(gameUI.getRoot());
     }
 
-    private void showCareerMapUI() {
-        var mapUI = new CareerMapUI();
-        setUI(mapUI.getRoot());
+    private void showCareerMapUI(){
+        var careerMapUI = new CareerMapUI();
+        setUI(careerMapUI.getRoot());
     }
 
-
-    // Если вы хотите запускать игру из отдельного main-метода (для тестирования)
     public static void main(String[] args) {
         launch(args);
     }

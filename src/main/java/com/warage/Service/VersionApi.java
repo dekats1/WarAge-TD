@@ -1,6 +1,5 @@
 package com.warage.Service;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -15,8 +14,10 @@ import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Stream;
 
 public class VersionApi {
     private static final String BASE_SERVER_URL = "http://localhost:8080";
@@ -27,6 +28,7 @@ public class VersionApi {
 
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
+    private final Path cacheDirPath;
     private final Path cacheFilePath;
 
     public VersionApi() {
@@ -36,16 +38,15 @@ public class VersionApi {
         this.objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
         Path userHome = Paths.get(System.getProperty("user.home"));
-        Path cacheDir = userHome.resolve("." + CACHE_DIR_NAME);
-        this.cacheFilePath = cacheDir.resolve(VERSION_CACHE_FILE);
+        this.cacheDirPath = userHome.resolve("." + CACHE_DIR_NAME);
+        this.cacheFilePath = cacheDirPath.resolve(VERSION_CACHE_FILE);
 
         try {
-            Files.createDirectories(cacheDir);
+            Files.createDirectories(cacheDirPath);
         } catch (IOException e) {
-            System.err.println("Failed to create cache directory: " + cacheDir + " - " + e.getMessage());
+            System.err.println("Failed to create cache directory: " + cacheDirPath + " - " + e.getMessage());
         }
     }
-
 
     public CompletableFuture<Optional<Version>> loadVersionFromCache() {
         return CompletableFuture.supplyAsync(() -> {
@@ -59,7 +60,7 @@ public class VersionApi {
                     try {
                         Files.deleteIfExists(cacheFilePath);
                     } catch (IOException deleteEx) {
-                        System.err.println("Error deleting corrupted cache file: " + deleteEx.getMessage());
+                        System.err.println("Error deleting corrupted version cache file: " + deleteEx.getMessage());
                     }
                 }
             }
@@ -78,42 +79,73 @@ public class VersionApi {
         });
     }
 
-    public CompletableFuture<Optional<Version>> getLatestVersion() {
-        return loadVersionFromCache().thenCompose(cachedVersionOptional -> {
-            if (cachedVersionOptional.isPresent()) {
-                System.out.println("Returned version from cache.");
-                return CompletableFuture.completedFuture(cachedVersionOptional);
-            } else {
-                System.out.println("Cache empty or corrupted, fetching from server.");
-                HttpRequest request = HttpRequest.newBuilder().uri(URI.create(API_VERSION_LATEST_URL)).GET().header("Accept", "application/json").build();
+    private CompletableFuture<Void> clearCacheDirectory() {
+        return CompletableFuture.runAsync(() -> {
+            System.out.println("Clearing entire cache directory: " + cacheDirPath);
+            if (Files.exists(cacheDirPath)) {
+                try (Stream<Path> walk = Files.walk(cacheDirPath)) {
+                    walk.sorted(Comparator.reverseOrder())
+                            .map(Path::toFile)
+                            .forEach(File::delete);
+                } catch (IOException e) {
+                    System.err.println("Error clearing cache directory: " + e.getMessage());
+                    e.printStackTrace();
+                }
+            }
+            try {
+                Files.createDirectories(cacheDirPath);
+            } catch (IOException e) {
+                System.err.println("Failed to recreate cache directory after clearing: " + cacheDirPath + " - " + e.getMessage());
+            }
+        });
+    }
 
-                return httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString()).thenApply(response -> {
+    public CompletableFuture<Optional<Version>> getLatestVersion() {
+        System.out.println("Fetching latest version from server...");
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(API_VERSION_LATEST_URL))
+                .GET()
+                .header("Accept", "application/json")
+                .build();
+
+        CompletableFuture<Optional<Version>> future = httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenCompose(response -> {
                     if (response.statusCode() == 200) {
                         try {
                             Version serverVersion = objectMapper.readValue(response.body(), Version.class);
-                            saveVersionToCache(serverVersion);
-                            return Optional.of(serverVersion);
+                            System.out.println("Server version received: " + serverVersion.getVersion());
+
+                            return loadVersionFromCache().thenCompose(cachedVersionOpt -> {
+                                if (cachedVersionOpt.isPresent()) {
+                                    Version cachedVersion = cachedVersionOpt.get();
+                                    boolean versionsMatch = serverVersion.getVersion().equals(cachedVersion.getVersion())
+                                            && serverVersion.getDataVersion().equals(cachedVersion.getDataVersion());
+
+                                    if (!versionsMatch) {
+                                        return clearCacheDirectory()
+                                                .thenCompose(v -> saveVersionToCache(serverVersion))
+                                                .thenApply(v -> Optional.of(serverVersion));
+                                    }
+                                    return CompletableFuture.completedFuture(Optional.of(serverVersion));
+                                } else {
+                                    return clearCacheDirectory()
+                                            .thenCompose(v -> saveVersionToCache(serverVersion))
+                                            .thenApply(v -> Optional.of(serverVersion));
+                                }
+                            });
                         } catch (IOException e) {
-                            System.err.println("Error parsing version from server response: " + e.getMessage());
-                            e.printStackTrace();
-                            // Явно указываем тип для Optional.empty()
-                            return Optional.<Version>empty();
+                            System.err.println("Error parsing version: " + e.getMessage());
+                            return CompletableFuture.completedFuture(Optional.empty());
                         }
-                    } else if (response.statusCode() == 404) {
-                        System.err.println("Server returned 404 (Not Found) for latest version.");
-                        // Явно указываем тип для Optional.empty()
-                        return Optional.<Version>empty();
                     } else {
-                        System.err.println("Server responded with status " + response.statusCode() + ": " + response.body());
-                        // Явно указываем тип для Optional.empty()
-                        return Optional.<Version>empty();
+                        System.err.println("Server error: " + response.statusCode());
+                        return CompletableFuture.completedFuture(Optional.empty());
                     }
-                }).exceptionally(e -> {
-                    System.err.println("Error fetching version from server: " + e.getMessage());
-                    // Явно указываем тип для Optional.empty()
-                    return Optional.<Version>empty();
                 });
-            }
+
+        return future.exceptionally(ex -> {
+            System.err.println("Request failed: " + ex.getMessage());
+            return Optional.empty();
         });
     }
 }

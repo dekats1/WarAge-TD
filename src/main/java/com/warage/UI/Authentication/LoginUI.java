@@ -94,20 +94,36 @@ public class LoginUI {
         loginButton.setOnAction(e -> {
             String login = loginField.getText().trim();
             String password = passwordField.getText().trim();
-            if(login.isEmpty() || password.isEmpty()) {
-                System.out.println("ЗАПОЛНИ ВСЕ ПОЛЯ");
-            }
-            playerApiClient.loginPlayer(login, password).thenAccept(playerProfile ->{
-                Platform.runLater(()->{
-                    if(playerProfile != null) {
-                        Model.getInstance().setPlayer(playerProfile);
-                        onLoginSuccess.run();
-                    }else{
-                        System.out.println("Ошибка входа");
-                    }
-                });
-            });
+            boolean rememberMeSelected = rememberMe.isSelected(); // Получаем состояние чекбокса
 
+            if(login.isEmpty() || password.isEmpty()) {
+                // Измените System.out.println на showAlert для лучшего UX
+                showAlert(Alert.AlertType.WARNING, "Ошибка входа", "Пожалуйста, заполните все поля.");
+                return;
+            }
+            // Передайте rememberMeSelected как третий аргумент
+            playerApiClient.loginPlayer(login, password, rememberMeSelected).thenAccept(playerProfile ->{
+                        Platform.runLater(()->{
+                            if(playerProfile != null) {
+                                Model.getInstance().setPlayer(playerProfile);
+                                onLoginSuccess.run();
+                            }else{
+                                // Измените System.out.println на showAlert
+                                showAlert(Alert.AlertType.ERROR, "Ошибка входа", "Неизвестная ошибка при входе.");
+                            }
+                        });
+                    })
+                    // Добавьте обработку исключений для CompletableFuture
+                    .exceptionally(el -> {
+                        Platform.runLater(() -> {
+                            String errorMessage = "Произошла ошибка при входе.";
+                            if (el.getCause() != null && el.getCause().getMessage() != null) {
+                                errorMessage = el.getCause().getMessage();
+                            }
+                            showAlert(Alert.AlertType.ERROR, "Ошибка входа", errorMessage);
+                        });
+                        return null;
+                    });
         });
         root.getChildren().add(loginButton);
 
@@ -125,7 +141,13 @@ public class LoginUI {
         registerButton.setOnAction(e -> toRegistration.run());
         root.getChildren().add(registerButton);
     }
-
+    private void showAlert(Alert.AlertType alertType, String title, String message) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
 
     public AnchorPane getRoot(){
         return root;
