@@ -24,8 +24,6 @@ public class LoginUI {
         TimeChecker.setBackgroundImage(backgroundImage);
         backgroundImage.setFitWidth(1600);
         backgroundImage.setFitHeight(800);
-        backgroundImage.setLayoutX(-14);
-        backgroundImage.setLayoutY(-11);
         backgroundImage.setPickOnBounds(true);
 
         // ПРИВЯЗКА ФОТО К КРАЯМ

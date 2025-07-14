@@ -17,7 +17,7 @@ public class MenuUI {
 
     private AnchorPane root;
 
-    public MenuUI(Consumer<Node> achievementWindow, Runnable toCareerMap) {
+    public MenuUI(Consumer<Node> achievementWindow, Runnable toCareerMap, Runnable infinityGame) {
         root = new AnchorPane();
         root.getStyleClass().add("root");
         root.getStylesheets().add(getClass().getResource("/Styles/Menu.css").toExternalForm());
@@ -81,6 +81,10 @@ public class MenuUI {
         startGameLabel.setPrefWidth(96.0);
         startGameLabel.getStyleClass().add("round-button-label");
         root.getChildren().add(startGameLabel);
+
+        startGameButton.setOnAction(e -> {
+           infinityGame.run();
+        });
 
         // Achievement Button
         ImageView achievementImage = new ImageView();

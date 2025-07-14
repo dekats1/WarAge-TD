@@ -1,7 +1,10 @@
 package com.warage;
 
 import com.almasb.fxgl.app.GameApplication;
+import com.almasb.fxgl.app.GameController;
 import com.almasb.fxgl.app.GameSettings;
+import com.almasb.fxgl.dsl.FXGL;
+import com.almasb.fxgl.input.UserAction;
 import com.warage.Model.Model;
 import com.warage.Model.Version;
 import com.warage.Service.PlayerApiClient; // Импортируйте
@@ -9,23 +12,27 @@ import com.warage.Service.VersionApi;
 import com.warage.UI.Authentication.LoginUI;
 import com.warage.UI.Authentication.RegistrationUI;
 import com.warage.UI.CareerGameUI.CareerMapUI;
+import com.warage.UI.InfinityGameUI;
+import com.warage.UI.InterfaceUI.PauseMenuUI;
 import com.warage.UI.MainMenuUI;
 import com.warage.UI.MenuUI;
 import com.warage.UI.SettingsUI;
 import javafx.application.Platform;
 import javafx.scene.Node;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.StackPane;
+
 
 import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.CompletableFuture; // Импорт для CompletableFuture
 
-import static com.almasb.fxgl.dsl.FXGLForKtKt.addUINode;
+import static com.almasb.fxgl.dsl.FXGLForKtKt.*;
+
 
 public class TowerDefenseGameApp extends GameApplication {
     private StackPane rootUI;
-    private PlayerApiClient playerApiClient; // Добавьте это
+    private PlayerApiClient playerApiClient;
 
     @Override
     protected void initSettings(GameSettings settings) {
@@ -47,12 +54,15 @@ public class TowerDefenseGameApp extends GameApplication {
             System.err.println("Error fetching version: " + e.getMessage());
             Model.getInstance().setVersion("1.0.0"); // Fallback
         }
+        settings.setFullScreenFromStart(true);
+        settings.setFullScreenAllowed(true);
     }
 
     @Override
     protected void initInput() {
-        // Здесь будет обработка пользовательского ввода (клавиатура, мышь)
+
     }
+
 
     @Override
     protected void initUI() {
@@ -123,13 +133,19 @@ public class TowerDefenseGameApp extends GameApplication {
     private void showMenuUI() {
         var gameUI = new MenuUI(achievemntNode->{
             rootUI.getChildren().add(achievemntNode);
-        },this::showCareerMapUI);
+        },this::showCareerMapUI,this::showInfinityGameUI);
         setUI(gameUI.getRoot());
     }
 
     private void showCareerMapUI(){
         var careerMapUI = new CareerMapUI();
         setUI(careerMapUI.getRoot());
+    }
+
+    private void showInfinityGameUI(){
+        GameController gameController = getGameController();
+        var infinityGame = new InfinityGameUI(this::showMenuUI, gameController);
+        setUI(infinityGame.getRoot());
     }
 
     public static void main(String[] args) {

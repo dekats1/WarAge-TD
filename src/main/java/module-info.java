@@ -21,6 +21,8 @@ module WarAge.TD {
     exports com.warage;
     exports com.warage.UI;
     exports com.warage.UI.Authentication;
+    exports com.warage.UI.ShopInGame;
+    opens com.warage.UI.ShopInGame to javafx.fxml;
     // You might also need to export com.warage.Model if it's used directly by other modules or if FXGL needs to access it
     // exports com.warage.Model; // Consider adding this if you get "package not visible" errors for Model objects later
 }

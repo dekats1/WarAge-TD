@@ -1,0 +1,66 @@
+.root {
+    -fx-alignment: center;
+}
+
+.pauseLabel {
+    -fx-font-family: 'Arial Black';
+    -fx-font-size: 72px;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.8), 10, 0, 0, 2);
+    -fx-padding: 0 0 40px 0;
+}
+
+/* Контейнер для кнопок */
+.buttons-container {
+    -fx-alignment: center;
+    -fx-spacing: 20px;
+}
+
+/* Общие стили для всех кнопок */
+.menu-button {
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 5, 0, 0, 1);
+    -fx-background-insets: 0;
+    -fx-border-width: 2px;
+    -fx-border-color: white;
+    -fx-padding: 10px 20px;
+    -fx-transition: all 0.3s;
+}
+
+/* Стили для каждой кнопки индивидуально */
+.continueButton {
+    -fx-background-color: #2ecc71;
+}
+
+.continueButton:hover {
+    -fx-background-color: #27ae60;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.restartButton {
+    -fx-background-color: #3498db;
+}
+
+.restartButton:hover {
+    -fx-background-color: #2980b9;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.exitButton {
+    -fx-background-color: #e74c3c;
+}
+
+.exitButton:hover {
+    -fx-background-color: #c0392b;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+/* Главный контейнер */
+.main-container {
+    -fx-alignment: center;
+}
