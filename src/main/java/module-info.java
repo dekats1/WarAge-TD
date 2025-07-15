@@ -7,6 +7,7 @@ module WarAge.TD {
     requires com.fasterxml.jackson.datatype.jsr310;
     requires static lombok;
     requires java.prefs;
+    requires java.logging;
 
     // Open packages for FXML
     opens com.warage to javafx.fxml;

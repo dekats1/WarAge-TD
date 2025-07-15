@@ -1,9 +1,6 @@
 package com.warage.UI;
 
 import com.almasb.fxgl.app.GameController;
-import com.almasb.fxgl.entity.GameWorld;
-import com.warage.Model.Tower;
-import com.warage.TowerDefenseGameApp;
 import com.warage.UI.InterfaceUI.PauseMenuUI;
 import com.warage.UI.ShopInGame.HeroPurchaseListener;
 import com.warage.UI.ShopInGame.ShopForGameUI;

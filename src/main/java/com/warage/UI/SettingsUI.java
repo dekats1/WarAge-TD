@@ -1,13 +1,10 @@
 package com.warage.UI;
 
-import com.warage.Model.Model;
-import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import javafx.stage.Stage;
 
 public class SettingsUI {
 
