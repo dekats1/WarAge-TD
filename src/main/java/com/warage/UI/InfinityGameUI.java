@@ -1,29 +1,39 @@
 package com.warage.UI;
 
 import com.almasb.fxgl.app.GameController;
+import com.warage.Model.Tower;
 import com.warage.UI.InterfaceUI.PauseMenuUI;
 import com.warage.UI.ShopInGame.HeroPurchaseListener;
 import com.warage.UI.ShopInGame.ShopForGameUI;
+import com.warage.UI.UpdateBranch.UpdateBranchUI;
+import com.warage.Utils.SlideAnimations;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane; 
+import javafx.scene.layout.Pane;
 import javafx.scene.input.MouseEvent;
 import lombok.Data;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Data
 public class InfinityGameUI implements HeroPurchaseListener {
     private AnchorPane root;
     private ImageView background;
+    private ImageView road;
     private Pane unitsLayer;
     private ShopForGameUI shopForGameUI;
     private boolean isPaused = false;
     private PauseMenuUI pauseMenuUI;
+    private UpdateBranchUI updateBranch = new UpdateBranchUI();
 
-    private ShopForGameUI.Heroes pendingHeroToPlace = null;
+    private Tower pendingHeroToPlace = null;
     private ImageView ghostHeroImage = null;
 
     private GameController gameController;
+    private Map<ImageView,Tower> placedTowers = new HashMap<>();
+
 
     public InfinityGameUI(Runnable toMenuUI, GameController gameController) {
         this.gameController = gameController;
@@ -33,7 +43,7 @@ public class InfinityGameUI implements HeroPurchaseListener {
         root.setPrefHeight(800.0);
 
 
-        background = new ImageView(new Image(getClass().getResource("/Image/InfinityMap.png").toExternalForm()));
+        background = new ImageView(new Image(getClass().getResource("/Image/Maps/InfinityMap/InfinityMap.png").toExternalForm()));
         background.setFitWidth(1600);
         background.setFitHeight(800);
         background.setPickOnBounds(true);
@@ -41,6 +51,10 @@ public class InfinityGameUI implements HeroPurchaseListener {
         AnchorPane.setBottomAnchor(background, 0.0);
         AnchorPane.setLeftAnchor(background, 0.0);
         AnchorPane.setRightAnchor(background, 0.0);
+
+        road = new ImageView(new Image(getClass().getResource("/Image/Maps/InfinityMap/InfinityRoad.png").toExternalForm()));
+        road.setFitHeight(800);
+        road.setFitWidth(1600);
 
         // Pause
         ImageView pauseImage = new ImageView(new Image(getClass().getResource("/Image/InterfaceIcons/pause.png").toExternalForm()));
@@ -67,47 +81,76 @@ public class InfinityGameUI implements HeroPurchaseListener {
         AnchorPane.setLeftAnchor(unitsLayer, 0.0);
         AnchorPane.setRightAnchor(unitsLayer, 0.0);
 
+
         // Shop
+        ImageView closeButShop = new ImageView(new Image(getClass().getResource("/Image/InterfaceIcons/exitRedImage.png").toExternalForm()));
+        closeButShop.setFitHeight(50);
+        closeButShop.setFitWidth(50);
+        closeButShop.setPickOnBounds(true);
+        closeButShop.setLayoutX(1100);
+        closeButShop.setPreserveRatio(true);
+
+        closeButShop.setOnMouseClicked(event-> {
+            closeButShop.setVisible(false);
+            SlideAnimations.slideOutToRight(shopForGameUI.getRoot());
+        });
+
+        ImageView openShopImage = new ImageView(new Image(getClass().getResource("/Image/InterfaceIcons/ShopIcon.png").toExternalForm()));
+        openShopImage.setFitHeight(50);
+        openShopImage.setFitWidth(50);
+        openShopImage.setPickOnBounds(true);
+        openShopImage.setLayoutX(1470);
+        openShopImage.setLayoutY(5);
+        openShopImage.setPreserveRatio(true);
+
+        openShopImage.setOnMouseClicked(event-> {
+           closeButShop.setVisible(true);
+           SlideAnimations.slideOutToLeft(shopForGameUI.getRoot());
+        });
+
         shopForGameUI = new ShopForGameUI();
         shopForGameUI.setHeroPurchaseListener(this);
         AnchorPane.setRightAnchor(shopForGameUI.getRoot(), 0.0);
         AnchorPane.setTopAnchor(shopForGameUI.getRoot(), 0.0);
         AnchorPane.setBottomAnchor(shopForGameUI.getRoot(), 0.0);
 
-        root.getChildren().addAll(background, unitsLayer,pauseImage, shopForGameUI.getRoot());
+        // Update Branch
+        updateBranch.getRoot().setVisible(false);
+        updateBranch.getRoot().setPrefWidth(390);
+        AnchorPane.setRightAnchor(updateBranch.getRoot(), -390.0);
+        AnchorPane.setTopAnchor(updateBranch.getRoot(), 0.0);
+        AnchorPane.setBottomAnchor(updateBranch.getRoot(), 0.0);
+
+        root.getChildren().addAll(background, unitsLayer,road,pauseImage, openShopImage, shopForGameUI.getRoot(),closeButShop, updateBranch.getRoot());
 
         unitsLayer.setOnMouseClicked(this::handleMapClick);
         unitsLayer.setOnMouseMoved(this::handleMouseMovement);
-        unitsLayer.setOnMouseExited(event -> {
-            if (ghostHeroImage != null) {
-                unitsLayer.getChildren().remove(ghostHeroImage);
-                ghostHeroImage = null;
-            }
-        });
     }
 
     @Override
-    public void onHeroPurchase(ShopForGameUI.Heroes hero) {
+    public void onHeroPurchase(Tower hero) {
         if (this.pendingHeroToPlace == null) {
             this.pendingHeroToPlace = hero;
             showGhostHero(hero);
-            System.out.println("Геро выбран! Кликните по карте, чтобы разместить его.");
+            System.out.println("Герой выбран! Кликните по карте, чтобы разместить его.");
         } else {
-            System.out.println("Вы уже держите героя. Сначала разместите его.");
+            this.pendingHeroToPlace = hero;
+            showGhostHero(hero);
+            System.out.println("Выбран новый герой! Кликните по карте, чтобы разместить его.");
         }
     }
 
 
-    private void showGhostHero(ShopForGameUI.Heroes hero) {
+    private void showGhostHero(Tower hero) {
         if (ghostHeroImage != null) {
             unitsLayer.getChildren().remove(ghostHeroImage);
         }
 
         ghostHeroImage = new ImageView();
         try {
-            ghostHeroImage.setImage(new Image(getClass().getResource(hero.getPhotoPath()).toExternalForm()));
+            ghostHeroImage.setImage(new Image(getClass().getResource(hero.getAssetPath()).toExternalForm()));
         } catch (Exception e) {
-            System.err.println("Ошибка при загрузке изображения призрака героя " + hero.getPhotoPath() + ": " + e.getMessage());
+            System.err.println("Ошибка при загрузке изображения призрака героя " + hero.getAssetPath() + ": " + e.getMessage());
             return;
         }
 
@@ -120,8 +163,8 @@ public class InfinityGameUI implements HeroPurchaseListener {
 
     private void handleMouseMovement(MouseEvent event) {
         if (pendingHeroToPlace != null && ghostHeroImage != null) {
-            ghostHeroImage.setLayoutX(event.getX() - ghostHeroImage.getFitWidth() );
-            ghostHeroImage.setLayoutY(event.getY() - ghostHeroImage.getFitHeight());
+            ghostHeroImage.setLayoutX(event.getX() - ghostHeroImage.getFitWidth()/2);
+            ghostHeroImage.setLayoutY(event.getY() - ghostHeroImage.getFitHeight()/2);
         }
     }
 
@@ -141,21 +184,26 @@ public class InfinityGameUI implements HeroPurchaseListener {
         }
     }
 
-    private void placeHeroOnMap(ShopForGameUI.Heroes hero, double x, double y) {
+    private void placeHeroOnMap(Tower hero, double x, double y) {
         ImageView actualHeroImage = new ImageView();
         try {
-            actualHeroImage.setImage(new Image(getClass().getResource(hero.getPhotoPath()).toExternalForm()));
+            actualHeroImage.setImage(new Image(getClass().getResource(hero.getAssetPath()).toExternalForm()));
         } catch (Exception e) {
-            System.err.println("Ошибка при загрузке изображения героя " + hero.getPhotoPath() + ": " + e.getMessage());
+            System.err.println("Ошибка при загрузке изображения героя " + hero.getAssetPath() + ": " + e.getMessage());
             return;
         }
-
+        placedTowers.put(actualHeroImage, hero);
         actualHeroImage.setFitWidth(50);
         actualHeroImage.setFitHeight(50);
         actualHeroImage.setLayoutX(x - actualHeroImage.getFitWidth());
         actualHeroImage.setLayoutY(y - actualHeroImage.getFitHeight());
-        shopForGameUI.updateGold(hero.getCost());
-        unitsLayer.getChildren().add(actualHeroImage); // Добавляем героя в слой юнитов
+        shopForGameUI.updateGold(hero.getBaseCost());
+        unitsLayer.getChildren().add(actualHeroImage);
+
+        actualHeroImage.setOnMouseClicked(event->{
+            event.consume();
+            handleMouseClickOnTower(event);
+        });
 
         // Cоздать и добавить в игру не только визуальное представление,
 
@@ -180,5 +228,19 @@ public class InfinityGameUI implements HeroPurchaseListener {
                     gameController.resumeEngine();
                 }
         );
-        root.getChildren().add(pauseMenuUI.getRoot());}
+        root.getChildren().add(pauseMenuUI.getRoot());
+    }
+
+
+    private void handleMouseClickOnTower(MouseEvent event) {
+        if(event.getTarget() instanceof ImageView) {
+            ImageView selectedHeroImage = (ImageView) event.getTarget();
+            Tower selectedTower = placedTowers.get(selectedHeroImage);
+            if(selectedTower != null) {
+                updateBranch.setTower(selectedTower);
+                SlideAnimations.slideInFromRight(updateBranch.getRoot(),root.getWidth());
+            }
+        }
+    }
+
 }

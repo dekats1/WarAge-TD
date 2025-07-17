@@ -1,6 +1,9 @@
 package com.warage.UI.ShopInGame;
 
-import javafx.fxml.FXML;
+import com.almasb.fxgl.dsl.FXGL;
+import com.warage.Model.Tower;
+import com.warage.Service.TowerApi;
+import com.warage.Utils.SlideAnimations;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -9,10 +12,9 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.Region;
 import javafx.scene.shape.Line;
 import lombok.Data;
-import javafx.geometry.Insets; // Добавьте этот импорт
+import javafx.geometry.Insets;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -25,46 +27,19 @@ public class ShopForGameUI {
     private FlowPane heroesFlowPane;
     private Label goldAmountLabel;
     private HeroPurchaseListener purchaseListener;
-    private int coins = 500;
+    private int coins = 10000000;
+    private TowerApi towerApi = new TowerApi();
+    private List<Tower> allTowers = new ArrayList<>();
 
     public void setHeroPurchaseListener(HeroPurchaseListener listener) {
         this.purchaseListener = listener;
     }
 
-    @Data
-    public static class Heroes {
-        String photoPath;
-        Integer cost;
-
-        public Heroes(String photoPath, Integer cost) {
-            this.photoPath = photoPath;
-            this.cost = cost;
-        }
-    }
-
-    private List<Heroes> allheroes = new ArrayList<>();
 
     public ShopForGameUI() {
-        // Заполняем список героев. Добавил имена и разные изображения для примера.
-        allheroes.add(new Heroes("/Image/hero.png", 100));
-        allheroes.add(new Heroes("/Image/hero.png", 120));
-        allheroes.add(new Heroes("/Image/hero.png", 150));
-        allheroes.add(new Heroes("/Image/hero.png", 200));
-        allheroes.add(new Heroes("/Image/hero.png", 130));
-        allheroes.add(new Heroes("/Image/hero.png", 110));
-        allheroes.add(new Heroes("/Image/hero.png", 100));
-        allheroes.add(new Heroes("/Image/hero.png", 120));
-        allheroes.add(new Heroes("/Image/hero.png", 150));
-        allheroes.add(new Heroes("/Image/hero.png", 200));
-        allheroes.add(new Heroes("/Image/hero.png", 130));
-        allheroes.add(new Heroes("/Image/hero.png", 110));
-        allheroes.add(new Heroes("/Image/hero.png", 100));
-        allheroes.add(new Heroes("/Image/hero.png", 120));
-        allheroes.add(new Heroes("/Image/hero.png", 150));
-        allheroes.add(new Heroes("/Image/hero.png", 200));
-        allheroes.add(new Heroes("/Image/hero.png", 130));
-        allheroes.add(new Heroes("/Image/hero.png", 110));
-
+        towerApi.getAllTowers().thenAccept(heroes->{
+            allTowers.addAll(heroes);
+        });
         root = new AnchorPane();
         root.setPrefHeight(607.0);
         root.setPrefWidth(390.0);
@@ -159,8 +134,8 @@ public class ShopForGameUI {
         refreshHeroes();
     }
 
-    // Создание UI отображения героя (1)
-    private Pane createHeroUI(Heroes hero) {
+    // Создание UI отображения героя
+    private Pane createHeroUI(Tower tower) {
         Pane heroPane = new Pane();
         heroPane.setPrefSize(150, 180);
         heroPane.getStyleClass().add("hero-card-pane");
@@ -175,28 +150,29 @@ public class ShopForGameUI {
         heroImageView.setLayoutY(10.0);
 
         try {
-            URL heroImageUrl = getClass().getResource(hero.photoPath);
+            URL heroImageUrl = getClass().getResource(tower.getAssetPath());
             if (heroImageUrl != null) {
                 heroImageView.setImage(new Image(heroImageUrl.toExternalForm()));
             } else {
-                System.err.println("Ошибка: Изображение героя не найдено по пути: " + hero.photoPath);
+                System.err.println("Ошибка: Изображение героя не найдено по пути: " + tower.getAssetPath());
             }
         } catch (Exception e) {
-            System.err.println("Ошибка при загрузке изображения героя " + hero.photoPath + ": " + e.getMessage());
+            System.err.println("Ошибка при загрузке изображения героя " + tower.getAssetPath() + ": " + e.getMessage());
         }
 
         // Стоимость героя
-        Label costLabel = new Label(String.valueOf(hero.cost));
+        Label costLabel = new Label(String.valueOf(tower.getBaseCost()));
         costLabel.setLayoutX(50.0);
         costLabel.setLayoutY(145.0);
         costLabel.getStyleClass().add("hero-cost-label");
         heroPane.setOnMouseClicked(event->{
-            if (coins >= hero.cost) {
+            if (coins >= tower.getBaseCost()) {
                 if(purchaseListener != null) {
-                    purchaseListener.onHeroPurchase(hero);
+                    purchaseListener.onHeroPurchase(tower);
                 }
             } else {
-                System.out.println("Недостаточно золота для покупки героя: " + hero.getCost());}
+                FXGL.getNotificationService().pushNotification("НЕДОСТАТОЧНО ДЕНЕГ");
+            }
         });
 
         ImageView coinImage = new ImageView();
@@ -216,8 +192,8 @@ public class ShopForGameUI {
      */
     private void refreshHeroes() {
         heroesFlowPane.getChildren().clear(); // Очищаем предыдущие карточки героев
-        for (Heroes hero : allheroes) {
-            Pane heroUI = createHeroUI(hero);
+        for (Tower tow : allTowers) {
+            Pane heroUI = createHeroUI(tow);
             heroesFlowPane.getChildren().add(heroUI);
         }
     }

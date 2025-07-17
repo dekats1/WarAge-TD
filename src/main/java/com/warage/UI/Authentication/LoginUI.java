@@ -126,7 +126,7 @@ public class LoginUI {
         root.getChildren().add(loginButton);
 
         // Надпись "Ещё не зарегистрированы?"
-        Label registerLabel = new Label("Ещё не зарегестрированы?");
+        Label registerLabel = new Label("Ещё не зарегистрированы?");
         registerLabel.setLayoutX(560);
         registerLabel.setLayoutY(726);
         root.getChildren().add(registerLabel);

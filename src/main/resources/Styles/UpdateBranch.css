@@ -1,0 +1,35 @@
+/* Основной стиль окна */
+.update-branch-root {
+    -fx-background-color: #2c3e50;
+    -fx-background-radius: 10;
+    -fx-border-color: #3498db;
+    -fx-border-width: 2;
+    -fx-border-radius: 10;
+    -fx-padding: 15;
+}
+
+/* Изображение башни */
+.tower-image {
+    -fx-effect: dropshadow(three-pass-box, #f1c40f, 8, 0.5, 0, 0);
+}
+
+/* Стиль стрелок */
+.upgrade-arrow {
+    -fx-stroke: #e74c3c;       /* Цвет линии */
+    -fx-stroke-width: 3;       /* Толщина линии */
+    -fx-cursor: hand;          /* Курсор-указатель */
+}
+
+.upgrade-arrow:hover {
+    -fx-stroke: #f39c12;       /* Цвет при наведении */
+    -fx-stroke-width: 4;
+}
+
+/* Наконечники стрелок */
+.arrow-head {
+    -fx-fill: #e74c3c;         /* Красный цвет */
+}
+
+.arrow-head:hover {
+    -fx-fill: #f39c12;         /* Оранжевый при наведении */
+}

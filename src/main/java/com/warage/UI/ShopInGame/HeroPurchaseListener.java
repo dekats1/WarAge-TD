@@ -1,5 +1,7 @@
 package com.warage.UI.ShopInGame;
 
+import com.warage.Model.Tower;
+
 public interface HeroPurchaseListener {
-    void onHeroPurchase(ShopForGameUI.Heroes hero);
+    void onHeroPurchase(Tower tower);
 }
