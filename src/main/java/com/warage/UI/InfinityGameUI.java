@@ -22,9 +22,11 @@ public class InfinityGameUI implements HeroPurchaseListener {
     private AnchorPane root;
     private ImageView background;
     private ImageView road;
+    private ImageView closeButShop;
     private Pane unitsLayer;
     private ShopForGameUI shopForGameUI;
     private boolean isPaused = false;
+    private boolean isBranchesOpened = false;
     private PauseMenuUI pauseMenuUI;
     private UpdateBranchUI updateBranch = new UpdateBranchUI();
 
@@ -83,11 +85,11 @@ public class InfinityGameUI implements HeroPurchaseListener {
 
 
         // Shop
-        ImageView closeButShop = new ImageView(new Image(getClass().getResource("/Image/InterfaceIcons/exitRedImage.png").toExternalForm()));
+        closeButShop = new ImageView(new Image(getClass().getResource("/Image/InterfaceIcons/exitRedImage.png").toExternalForm()));
         closeButShop.setFitHeight(50);
         closeButShop.setFitWidth(50);
         closeButShop.setPickOnBounds(true);
-        closeButShop.setLayoutX(1100);
+        closeButShop.setLayoutX(1160);
         closeButShop.setPreserveRatio(true);
 
         closeButShop.setOnMouseClicked(event-> {
@@ -181,6 +183,11 @@ public class InfinityGameUI implements HeroPurchaseListener {
                 unitsLayer.getChildren().remove(ghostHeroImage);
                 ghostHeroImage = null;
             }
+        } else if(isBranchesOpened){
+            closeButShop.setVisible(true);
+            isBranchesOpened = false;
+            updateBranch.getRoot().setVisible(false);
+            SlideAnimations.slideOutToRight(updateBranch.getRoot());
         }
     }
 
@@ -237,6 +244,8 @@ public class InfinityGameUI implements HeroPurchaseListener {
             ImageView selectedHeroImage = (ImageView) event.getTarget();
             Tower selectedTower = placedTowers.get(selectedHeroImage);
             if(selectedTower != null) {
+                closeButShop.setVisible(false);
+                isBranchesOpened = true;
                 updateBranch.setTower(selectedTower);
                 SlideAnimations.slideInFromRight(updateBranch.getRoot(),root.getWidth());
             }

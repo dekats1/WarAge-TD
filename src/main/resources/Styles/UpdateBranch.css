@@ -11,6 +11,8 @@
 /* Изображение башни */
 .tower-image {
     -fx-effect: dropshadow(three-pass-box, #f1c40f, 8, 0.5, 0, 0);
+    -fx-border-color: gold;
+    -fx-border-width: 1px;
 }
 
 /* Стиль стрелок */
@@ -32,4 +34,29 @@
 
 .arrow-head:hover {
     -fx-fill: #f39c12;         /* Оранжевый при наведении */
+}
+
+.upgrade-path-box {
+    -fx-background-color: rgba(0,0,0,0.3);
+    -fx-padding: 5;
+    -fx-spacing: 5;
+}
+
+.upgrade-pane {
+    -fx-background-color: #34495e;
+    -fx-border-color: #2c3e50;
+    -fx-border-width: 1;
+    -fx-pref-width: 100;
+    -fx-pref-height: 60;
+}
+
+.upgrade-button {
+    -fx-background-color: #27ae60;
+    -fx-text-fill: white;
+    -fx-pref-width: 20;
+    -fx-pref-height: 20;
+}
+
+.upgrade-button:hover {
+    -fx-background-color: #2ecc71;
 }
